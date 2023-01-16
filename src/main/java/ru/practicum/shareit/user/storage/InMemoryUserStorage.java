@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDto;
+import ru.practicum.shareit.user.UserMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import java.util.Map;
 @Service
 public class InMemoryUserStorage implements UserStorage{
     private final Map<Long, User> userMap = new HashMap<>();
+    //private  final UserMapper userMapper
     private long idCounter = 1;
 
     @Override
@@ -30,9 +33,9 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public User create(User user){
+    public UserDto create(UserDto user){
         user.setId(idCounter++);
-        userMap.put(user.getId(), user);
+        userMap.put(user.getId(), UserMapper.toUser(user));
         log.info("Пользователь с id {} создан", user.getId());
         return user;
     }

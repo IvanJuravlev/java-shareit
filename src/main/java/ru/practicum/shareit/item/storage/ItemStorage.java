@@ -8,8 +8,8 @@ import java.util.List;
 public interface ItemStorage {
      List<Item> getAll();
      Item getItemById(long id);
-     Item create(Item item);
-     Item update(Item item);
+     ItemDto create(long userId, ItemDto item);
+     Item update(long userId, Item item);
      void delete(long id);
-    List<ItemDto> searchItem(String text);
+     List<Item> searchItem(String text);
 }
