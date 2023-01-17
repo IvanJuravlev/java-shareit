@@ -22,13 +22,19 @@ import java.util.Map;
 public class InMemoryItemStorage implements ItemStorage {
     private final Map<Long, Item> itemMap = new HashMap<>();
     private long idCounter = 1;
-    private final UserService userService;
     private final ItemMapper itemMapper;
 
 
     @Override
-    public List<Item> getAll(){
-        return new ArrayList<>(itemMap.values());
+    public List<Item> getAllByOwner(long ownerId){
+        List<Item> itemsByOwner = new ArrayList<>();
+
+        for (Item item : itemMap.values()){
+            if(item.getOwner() == ownerId){
+                itemsByOwner.add(item);
+            }
+        }
+        return itemsByOwner;
     }
 
     @Override
