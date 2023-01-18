@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.DuplicatedEmailException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     public UserDto create(UserDto user){
+        checkIfEmailExists(user.getEmail());
         return userStorage.create(user);
 
     }
@@ -35,4 +37,15 @@ public class UserServiceImpl implements UserService{
     public void delete(long id){
         userStorage.delete(id);
     }
+
+    private void checkIfEmailExists(String email) {
+        for(User user : userStorage.getAll()){
+            if(user.getEmail().equals(email)){
+                throw new DuplicatedEmailException("Пользователь таким с email " + email + " уже существует");
+            }
+        }
+    }
+//        userStorage.(email).ifPresent(user -> {
+//            throw new DuplicatedEmailException(email);
+//        });
 }
