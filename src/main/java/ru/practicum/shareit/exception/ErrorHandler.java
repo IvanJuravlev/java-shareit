@@ -28,4 +28,11 @@ public class ErrorHandler {
         log.warn("404 {}", exception.getMessage());
         return exception.getMessage();
     }
+
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public String handleException(Throwable exception) {
+//        log.error(exception.getMessage());
+//        return exception.getMessage();
+//    }
 }

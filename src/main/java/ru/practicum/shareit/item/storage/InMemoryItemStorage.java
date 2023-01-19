@@ -50,12 +50,8 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public ItemDto create(long userId, ItemDto item) {
+        userStorage.getById(userId);
         item.setId(idCounter++);
-        for (User user : userStorage.getAll()) {
-            if (user.getId() == userId) {
-                throw new NotFoundException("Пользователь " + userId + " не найден");
-            }
-        }
         itemMap.put(item.getId(), ItemMapper.toItem(item, userId));
         log.info("Предмет с id {} создан", item.getId());
         return item;
@@ -81,7 +77,7 @@ public class InMemoryItemStorage implements ItemStorage {
             prevItem.setAvailable(item.getAvailable());
         }
         log.info("Предмет с id {} обновлен", prevItem.getId());
-        return prevItem;
+        return itemMap.get(itemId);
     }
 
     @Override

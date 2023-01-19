@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService{
     }
     @Override
     public User update(long id, User user){
+        checkIfEmailExists(user.getEmail());
         return userStorage.update(id, user);
     }
     @Override
@@ -45,7 +46,5 @@ public class UserServiceImpl implements UserService{
             }
         }
     }
-//        userStorage.(email).ifPresent(user -> {
-//            throw new DuplicatedEmailException(email);
-//        });
+
 }
