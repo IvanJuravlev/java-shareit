@@ -9,9 +9,13 @@ import java.util.List;
 
 public interface UserStorage {
     List<User> getAll();
+
     User getById(long id);
+
     UserDto create(UserDto user);
+
     User update(long id, User user);
+
     void delete(long id);
 
 }

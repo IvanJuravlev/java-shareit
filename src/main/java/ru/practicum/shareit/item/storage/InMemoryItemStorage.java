@@ -24,7 +24,7 @@ public class InMemoryItemStorage implements ItemStorage {
     private final UserStorage userStorage;
 
     @Override
-    public List<Item> getAllByOwner(long ownerId){
+    public List<Item> getAllByOwner(long ownerId) {
         List<Item> itemsByOwner = new ArrayList<>();
 
         for (Item item : itemMap.values()){
@@ -36,7 +36,7 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Item getItemById(long id){
+    public Item getItemById(long id) {
         if(!itemMap.containsKey(id)){
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
@@ -53,8 +53,8 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Item update(long itemId, long userId, Item item){
-        if (!itemMap.containsKey(itemId)){
+    public Item update(long itemId, long userId, Item item) {
+        if (!itemMap.containsKey(itemId)) {
             throw new NotFoundException("Предмета с id " + itemId + " несуществует");
         }
 
@@ -77,8 +77,8 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public void delete(long id){
-        if(!itemMap.containsKey(id)){
+    public void delete(long id) {
+        if(!itemMap.containsKey(id)) {
             throw new NotFoundException("Предмета с id " + id + " несуществует");
         }
         itemMap.remove(id);
@@ -86,14 +86,14 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public List<Item> searchItem(String text){
+    public List<Item> searchItem(String text) {
         List<Item> itemsList = new ArrayList<>();
         if (text.isBlank() || text.isEmpty()) {
             return itemsList;
         }
 
         text = text.toLowerCase();
-        for (Item item : itemMap.values()){
+        for (Item item : itemMap.values()) {
             if(!item.getAvailable()){
                 continue;
             }

@@ -17,32 +17,32 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto){
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody Item item){
+    public Item update(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody Item item) {
         return itemService.update(itemId, userId, item);
     }
 
     @GetMapping
-    public List<Item> getAllByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId){
+    public List<Item> getAllByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) {
         return itemService.getAllByOwner(ownerId);
     }
 
     @GetMapping("/{itemId}")
-    public Item getItemById(@PathVariable long itemId){
+    public Item getItemById(@PathVariable long itemId) {
         return itemService.getItemById(itemId);
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam String text){
+    public List<Item> searchItem(@RequestParam String text) {
         return itemService.searchItem(text);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable long id){
+    public void delete(@PathVariable long id) {
         itemService.delete(id);
     }
 

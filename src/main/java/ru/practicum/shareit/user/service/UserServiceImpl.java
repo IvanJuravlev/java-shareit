@@ -12,30 +12,30 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userStorage.getAll();
     }
     @Override
-    public User getById(long id){
+    public User getById(long id) {
         return userStorage.getById(id);
     }
     @Override
-    public UserDto create(UserDto user){
+    public UserDto create(UserDto user) {
         checkIfEmailExists(user.getEmail());
         return userStorage.create(user);
 
     }
     @Override
-    public User update(long id, User user){
+    public User update(long id, User user) {
         checkIfEmailExists(user.getEmail());
         return userStorage.update(id, user);
     }
     @Override
-    public void delete(long id){
+    public void delete(long id) {
         userStorage.delete(id);
     }
 

@@ -14,25 +14,25 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> userMap = new HashMap<>();
     private long idCounter = 1;
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return new ArrayList<>(userMap.values());
     }
 
     @Override
-    public User getById(long id){
-        if(!userMap.containsKey(id)){
+    public User getById(long id) {
+        if(!userMap.containsKey(id)) {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
         return userMap.get(id);
     }
 
     @Override
-    public UserDto create(UserDto user){
+    public UserDto create(UserDto user) {
         user.setId(idCounter++);
         userMap.put(user.getId(), UserMapper.toUser(user));
         log.info("Пользователь с id {} создан", user.getId());
@@ -56,8 +56,8 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     @Override
-    public void delete(long id){
-        if(!userMap.containsKey(id)){
+    public void delete(long id) {
+        if(!userMap.containsKey(id)) {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
         userMap.remove(id);
