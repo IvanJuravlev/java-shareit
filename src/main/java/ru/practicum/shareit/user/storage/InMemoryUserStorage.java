@@ -25,7 +25,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(long id) {
-        if(!userMap.containsKey(id)) {
+        if (!userMap.containsKey(id)) {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
         return userMap.get(id);
@@ -40,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(long id, User user){
+    public User update(long id, User user) {
         if (userMap.containsKey(id)) {
             if (user.getName() != null) {
                 userMap.get(id).setName(user.getName());
@@ -57,7 +57,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void delete(long id) {
-        if(!userMap.containsKey(id)) {
+        if (!userMap.containsKey(id)) {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
         userMap.remove(id);

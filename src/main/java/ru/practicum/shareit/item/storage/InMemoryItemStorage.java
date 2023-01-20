@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.storage.UserStorage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +26,8 @@ public class InMemoryItemStorage implements ItemStorage {
     public List<Item> getAllByOwner(long ownerId) {
         List<Item> itemsByOwner = new ArrayList<>();
 
-        for (Item item : itemMap.values()){
-            if(item.getOwner() == ownerId){
+        for (Item item : itemMap.values()) {
+            if (item.getOwner() == ownerId) {
                 itemsByOwner.add(item);
             }
         }
@@ -37,7 +36,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item getItemById(long id) {
-        if(!itemMap.containsKey(id)){
+        if (!itemMap.containsKey(id)) {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
         return itemMap.get(id);
@@ -78,7 +77,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public void delete(long id) {
-        if(!itemMap.containsKey(id)) {
+        if (!itemMap.containsKey(id)) {
             throw new NotFoundException("Предмета с id " + id + " несуществует");
         }
         itemMap.remove(id);
@@ -94,7 +93,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
         text = text.toLowerCase();
         for (Item item : itemMap.values()) {
-            if(!item.getAvailable()){
+            if (!item.getAvailable()) {
                 continue;
             }
             if (item.getName().toLowerCase().contains(text) || item.getDescription().toLowerCase().contains(text)) {
