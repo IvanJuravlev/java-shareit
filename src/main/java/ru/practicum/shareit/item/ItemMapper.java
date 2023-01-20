@@ -10,14 +10,6 @@ import ru.practicum.shareit.request.ItemRequest;
 
 public class ItemMapper {
 
-//    public static ItemDto toItemDto(Item item) {
-//        return new ItemDto(item.getId(),
-//                item.getName(),
-//                item.getDescription(),
-//                item.getAvailable()
-//        );
-//    }
-
     public static Item toItem(ItemDto itemDto, long userId) {
         return new Item(itemDto.getId(),
                 itemDto.getName(),

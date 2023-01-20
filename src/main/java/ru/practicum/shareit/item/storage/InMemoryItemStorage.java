@@ -2,15 +2,12 @@ package ru.practicum.shareit.item.storage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ChangeException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.ArrayList;
@@ -25,8 +22,6 @@ public class InMemoryItemStorage implements ItemStorage {
     private final Map<Long, Item> itemMap = new HashMap<>();
     private long idCounter = 1;
     private final UserStorage userStorage;
-  //  private final ItemMapper itemMapper;
-
 
     @Override
     public List<Item> getAllByOwner(long ownerId){
@@ -58,13 +53,14 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Item update(long itemId, Item item){
+    public Item update(long itemId, long userId, Item item){
         if (!itemMap.containsKey(itemId)){
             throw new NotFoundException("Предмета с id " + itemId + " несуществует");
         }
+
         Item prevItem = itemMap.get(itemId);
 
-        if (item.getOwner() != prevItem.getOwner()) {
+        if (userId != prevItem.getOwner()) {
             throw new ChangeException("Изменение предмета доступно только владельцу");
         }
         if (item.getName() != null) {

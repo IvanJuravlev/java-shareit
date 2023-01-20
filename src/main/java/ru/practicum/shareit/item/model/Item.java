@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter

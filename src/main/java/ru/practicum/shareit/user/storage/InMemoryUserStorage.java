@@ -16,7 +16,6 @@ import java.util.Map;
 @Service
 public class InMemoryUserStorage implements UserStorage{
     private final Map<Long, User> userMap = new HashMap<>();
-    //private  final UserMapper userMapper
     private long idCounter = 1;
 
     @Override
@@ -54,14 +53,6 @@ public class InMemoryUserStorage implements UserStorage{
         } else  {
             throw new NotFoundException("Пользователя с id " + id + " несуществует");
         }
-
-//        if(!userMap.containsKey(id)) {
-//            throw new NotFoundException("Пользователя с id " + id + " несуществует");
-//        }
-//            userMap.get(id).setName(user.getName());
-//            userMap.get(id).setEmail(user.getEmail());
-//
-//            return userMap.get(id);
     }
 
     @Override
@@ -71,6 +62,4 @@ public class InMemoryUserStorage implements UserStorage{
         }
         userMap.remove(id);
     }
-
-
 }
