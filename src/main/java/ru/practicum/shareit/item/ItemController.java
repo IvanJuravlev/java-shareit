@@ -15,23 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final String header = "X-Sharer-User-Id";
+    private final String itemPath = "/{itemId}";
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader (header) long userId, @Valid @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
-    @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody Item item) {
+    @PatchMapping(itemPath)
+    public Item update(@RequestHeader(header) long userId, @PathVariable long itemId, @RequestBody Item item) {
         return itemService.update(itemId, userId, item);
     }
 
     @GetMapping
-    public List<Item> getAllByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+    public List<Item> getAllByOwner(@RequestHeader(header) long ownerId) {
         return itemService.getAllByOwner(ownerId);
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping(itemPath)
     public Item getItemById(@PathVariable long itemId) {
         return itemService.getItemById(itemId);
     }

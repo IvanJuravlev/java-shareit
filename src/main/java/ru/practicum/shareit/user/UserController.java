@@ -13,13 +13,14 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
+    private final String idPath = "/{id}";
 
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(idPath)
     public User getUser(@PathVariable long id) {
         return userService.getById(id);
     }
@@ -29,12 +30,12 @@ public class UserController {
         return userService.create(userDto);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(idPath)
     public User updateUser(@PathVariable long id, @RequestBody User user) {
         return userService.update(id, user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(idPath)
     public void deleteUser(@PathVariable long id) {
         userService.delete(id);
     }
