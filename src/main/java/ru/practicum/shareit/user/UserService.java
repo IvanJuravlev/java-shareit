@@ -44,6 +44,7 @@ public class UserService {
         return UserMapper.toUserDto(user);
 
     }
+
     @Transactional
     public UserDto update(long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
@@ -68,11 +69,11 @@ public class UserService {
     }
 
     private void checkIfEmailExists(String email) {
-            if (userRepository.existsByEmail(email)) {
-                String message = "Пользователь таким с email " + email + " уже существует";
-                log.warn(message);
-                throw new DuplicatedEmailException(message);
-            }
+        if (userRepository.existsByEmail(email)) {
+            String message = "Пользователь таким с email " + email + " уже существует";
+            log.warn(message);
+            throw new DuplicatedEmailException(message);
         }
     }
 }
+

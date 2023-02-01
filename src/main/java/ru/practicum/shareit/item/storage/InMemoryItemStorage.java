@@ -20,7 +20,7 @@ import java.util.Map;
 public class InMemoryItemStorage implements ItemStorage {
     private final Map<Long, Item> itemMap = new HashMap<>();
     private long idCounter = 1;
-    private final UserStorage userStorage;
+  //  private final UserStorage userStorage;
 
     @Override
     public List<Item> getAllByOwner(long ownerId) {

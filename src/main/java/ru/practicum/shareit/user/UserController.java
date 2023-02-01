@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping(idPath)
-    public User getUser(@PathVariable long id) {
+    public UserDto getUser(@PathVariable long id) {
         return userService.getById(id);
     }
 
@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @PatchMapping(idPath)
-    public User updateUser(@PathVariable long id, @RequestBody User user) {
-        return userService.update(id, user);
+    public UserDto updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
+        return userService.update(id, userDto);
     }
 
     @DeleteMapping(idPath)
