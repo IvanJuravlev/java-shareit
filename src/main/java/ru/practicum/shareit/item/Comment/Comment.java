@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.Comment;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -23,9 +23,9 @@ public class Comment {
     @Column(nullable = false)
     String text;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "item_id", nullable = false)
-    Item item;  // посмотреть тут ошибку!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Item item; // посмотреть тут ошибку!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
