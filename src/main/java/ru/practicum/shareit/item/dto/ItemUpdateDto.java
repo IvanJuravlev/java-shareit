@@ -11,5 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class ItemUpdateDto {
     String name;
     String description;
-    boolean available;
+    Boolean available;
 }

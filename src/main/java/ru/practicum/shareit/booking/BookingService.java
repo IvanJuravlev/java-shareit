@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
@@ -24,6 +25,6 @@ public class BookingService {
         User booker = UserMapper.toUser(userService.getById(userId));
         long bookerId = booker.getId();
         long itemId = bookingDto.getItemId();
-        Item item = itemRepository.getItemById(itemId).orElseTrow(() -> )
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> )
     }
 }
