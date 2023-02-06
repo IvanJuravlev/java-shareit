@@ -2,9 +2,11 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.item.Comment.CommentDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,4 +21,7 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+//    private ItemBookingDto lastBooking; //последнее бронирование
+//    private ItemBookingDto nextBooking; //следующего бронирования
+//    private List<CommentDto> comments;
 }

@@ -3,10 +3,12 @@ package ru.practicum.shareit.item;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,20 +17,20 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
-    private long id;
+    long id;
 
     @Column(nullable = false)
-    private String name;
+    String name;
 
     @Column(nullable = false)
-    private String description;
+    String description;
 
     @Column(nullable = false)
-    private Boolean available;
+    Boolean available;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private long owner;
+    User owner;
 
     @Transient
     ItemRequest request;

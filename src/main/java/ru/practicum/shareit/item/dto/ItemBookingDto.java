@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.item.Comment.CommentDto;
 
 import java.time.LocalDateTime;
@@ -18,8 +19,8 @@ public class ItemBookingDto {
     String name;
     String description;
     boolean available;
-    BookingDto lastBooking;
-    BookingDto nextBooking;
+    BookingItemDto lastBooking;
+    BookingItemDto nextBooking;
     List<CommentDto> comments;
     //Возможно поменять тут!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }

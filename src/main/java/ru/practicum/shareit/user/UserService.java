@@ -21,9 +21,7 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final Map<Long, User> userMap = new HashMap<>();
-    private long idCounter = 1;
+    //private final UserMapper userMapper;
 
 
     public List<User> getAll() {
@@ -34,7 +32,7 @@ public class UserService {
     public UserDto getById(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Пользователя с id " + id + " несуществует"));
-        return userMapper.toUserDto(user);
+        return UserMapper.toUserDto(user);
     }
 
 
@@ -58,7 +56,7 @@ public class UserService {
             user.setName(userDto.getName());
         }
         log.info("Информация о пользователе с id {} обновлена", id);
-        return userMapper.toUserDto(userRepository.save(user));
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     @Transactional

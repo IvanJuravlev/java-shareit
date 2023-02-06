@@ -18,9 +18,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBookerId(Long bookerId);
 
-    List<Booking> findAllByBookerIdAndStatus(Long bookerId, LocalDateTime date);
+    List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status);
 
-    List<Booking> findAllByBookerIdAndStartIdAfter(Long bookerId, LocalDateTime date);
+    List<Booking> findAllByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime date);
+
+    List<Booking> findAllByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime date);
 
     @Query("select b from Booking b where  " +
             "b.start < :date and :date < b.end and " +
@@ -50,9 +52,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "b.item.owner.id = :ownerId and b.status = :status")
     List<Booking> findAllItemBookingStatus(Long ownerId, BookingStatus status);
 
-    Optional<Booking> findFirstByItemIdAndEndBeforeOOrderByEndDesc(Long itemId, LocalDateTime date);
 
-    Optional<Booking> findFirstByItemIdAndStartAfterOrderByStart(Long itemId, LocalDateTime date);
+    @Query("select distinct booking from Booking booking " +
+            "where booking.end < ?2 " +
+            "and booking.item.id = ?1 " +
+            "order by booking.start desc ")
+    Optional<Booking> findLastBooking(long itemId, LocalDateTime now);
+
+    @Query("select distinct booking from Booking booking " +
+            "where booking.start > ?2 " +
+            "and booking.item.id = ?1 " +
+            "order by booking.start ")
+    Optional<Booking> findNextBooking(long itemId, LocalDateTime now);
 
     Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, Long itemId, LocalDateTime date);
 }
