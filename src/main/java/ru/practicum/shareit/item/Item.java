@@ -32,7 +32,5 @@ public class Item {
     @JoinColumn(name = "user_id", nullable = false)
     User owner;
 
-    @Transient
-    ItemRequest request;
 
 }

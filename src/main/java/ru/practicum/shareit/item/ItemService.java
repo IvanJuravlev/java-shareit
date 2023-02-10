@@ -2,13 +2,10 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Comment.Comment;
@@ -25,7 +22,6 @@ import ru.practicum.shareit.user.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,22 +33,26 @@ public class ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
     private final BookingMapper bookingMapper;
 
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = UserMapper.toUser(userService.getById(userId));
-        Item item = itemRepository.save(ItemMapper.toItem(itemDto, null, owner));
+        Item item = itemRepository.save(itemMapper.toItem(itemDto, null, owner));
         itemDto.setId(item.getId());
-        return ItemMapper.toItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     public ItemBookingDto getByItemId(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Предмет с id " + itemId + " не найден"));
-        ItemDto itemDto = ItemMapper.toItemDto(item);
+       //ItemDto itemDto = ItemMapper.toItemDto(item);
 //        List<Comment> comments = commentRepository.findAllById(itemId, Sort.by("id"));
 //        itemDto.setComments(CommentMapper.toCommentDto(comments));
-        return setComments(setBookings(userId, item), itemId);
+        ItemBookingDto newItemDto = setComments(setBookings(userId, item), itemId);
+        log.warn("Резульатат " + newItemDto.getComments());
+        return newItemDto;
     }
 
     public List<Item> getAll(){
@@ -80,7 +80,7 @@ public class ItemService {
             throw new NotFoundException("Вещь для обновления не найдена");
         }
 
-        return ItemMapper.toItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     public List<ItemBookingDto> getAllByOwner(long ownerId) {
@@ -114,9 +114,17 @@ public class ItemService {
 
         bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(() ->
                new BadRequestException("Предмет не был забронирован"));
+        Comment comment = commentMapper.toComment(commentDto, author, item);
+        comment.setCreated(LocalDateTime.now());
+        comment.setItem(item);
+//        commentDto.setCreated(LocalDateTime.now());
+//        commentDto.setAuthorName(author.getName());
+//        commentDto.se(item);
+//        commentDto.setCreated(LocalDateTime.now());
 
-        Comment comment = CommentMapper.toComment(commentDto, author, item);
-        return CommentMapper.toCommentDto(commentRepository.save(comment));
+        commentRepository.save(comment);
+        log.warn("комментарий" + comment);
+        return commentMapper.toCommentDto(comment);
     }
 
     public void delete(long itemId) {
@@ -129,7 +137,7 @@ public class ItemService {
 
 
     private ItemBookingDto setBookings(long userId, Item item) {
-        ItemBookingDto itemDtoBooking = ItemMapper.toItemBookingDto(item);
+        ItemBookingDto itemDtoBooking = itemMapper.toItemBookingDto(item);
         if (item.getOwner().getId() == userId) {
             itemDtoBooking.setLastBooking(
                     bookingRepository.findLastBooking(
@@ -146,13 +154,20 @@ public class ItemService {
         return itemDtoBooking;
     }
 
-    private ItemBookingDto setComments(ItemBookingDto itemDtoBooking, long itemId) {
+    private ItemBookingDto setComments(ItemBookingDto itemBookingDto, long itemId) {
         List<CommentDto> commentDtos = commentRepository.findAllById(itemId).stream()
-                .map(CommentMapper::toCommentDto)
+                .map(commentMapper::toCommentDto)
                 .collect(Collectors.toList());
-        itemDtoBooking.setComments(commentDtos);
-        return itemDtoBooking;
+        itemBookingDto.setComments(commentDtos);
+        return itemBookingDto;
     }
+
+//    private ItemBookingDto setComments(ItemBookingDto itemDtoBooking, long itemId) {
+//        List<CommentDto> commentDtos = commentRepository.findAllById(itemId).stream()
+//                .map(CommentMapper::toCommentDto)
+//                .collect(Collectors.toList());
+//        itemDtoBooking.setComments(commentDtos);
+//        return itemDtoBooking;
 
 
 

@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "id")
     long id;
 
     @Column(nullable = false)
     String text;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne//(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "item_id", nullable = false)
     Item item; // посмотреть тут ошибку!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

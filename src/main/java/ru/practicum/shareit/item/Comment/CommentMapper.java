@@ -1,11 +1,17 @@
 package ru.practicum.shareit.item.Comment;
 
+import org.springframework.stereotype.Component;
+import ru.practicum.shareit.item.Comment.Comment;
+import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+@Component
 public class CommentMapper {
 
-    public static Comment toComment(CommentDto commentDto, User author, Item item){
+    public Comment toComment(CommentDto commentDto, User author, Item item){
         return new Comment(commentDto.getId(),
                 commentDto.getText(),
                 item,
@@ -13,10 +19,16 @@ public class CommentMapper {
                 commentDto.getCreated());
     }
 
-    public static CommentDto toCommentDto(Comment comment){
+    public CommentDto toCommentDto(Comment comment){
         return new CommentDto(comment.getId(),
                 comment.getAuthor().getName(),
                 comment.getText(),
                 comment.getCreated());
     }
+
+//    public List<CommentDto> toDTOList(List<Comment> comments) {
+//        return comments.stream()
+//                .map(this::toCommentDto)
+//                .collect(Collectors.toList());
+//    }
 }
