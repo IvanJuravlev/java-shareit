@@ -93,8 +93,7 @@ public class ItemService {
         if (text.isBlank() || text.isEmpty()) {
             return items;
         }
-        text.toLowerCase();
-        items = itemRepository.search(text);
+        items = itemRepository.search(text.toLowerCase());
         return items;
     }
 
