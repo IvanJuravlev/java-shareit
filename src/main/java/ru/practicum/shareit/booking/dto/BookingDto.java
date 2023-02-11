@@ -29,6 +29,4 @@ public class BookingDto {
     @Future
     LocalDateTime end;
     BookingStatus status;
-
-
 }

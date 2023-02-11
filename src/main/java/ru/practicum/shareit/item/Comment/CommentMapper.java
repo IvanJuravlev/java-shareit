@@ -26,9 +26,11 @@ public class CommentMapper {
                 comment.getCreated());
     }
 
-//    public List<CommentDto> toDTOList(List<Comment> comments) {
+//    @Override
+//    public List<CommentDTO> toDTOList(List<Comment> comments) {
 //        return comments.stream()
-//                .map(this::toCommentDto)
+//                .map(this::toDTO)
 //                .collect(Collectors.toList());
 //    }
+
 }

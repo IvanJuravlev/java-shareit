@@ -15,37 +15,34 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private static final String HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public BookingDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public BookingDto create(@RequestHeader(HEADER) Long userId,
                              @Valid @RequestBody ShortBookingDto shortBookingDto) {
         return bookingService.create(userId, shortBookingDto);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto findById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId) {
-        //Получение данных о конкретном бронировании
+    public BookingDto findById(@RequestHeader(HEADER) Long userId, @PathVariable Long bookingId) {
         return bookingService.findById(userId, bookingId);
     }
 
     @GetMapping
-    public List<BookingDto> findUserBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<BookingDto> findUserBooking(@RequestHeader(HEADER) Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam) {
-        //получить бронирования текущего пользователя (его)
         return bookingService.findByBooker(userId, stateParam);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> findItemBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<BookingDto> findItemBooking(@RequestHeader(HEADER) Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam) {
-        //все бронирования Вещей пользователя (другими)
         return bookingService.findItemBooking(userId, stateParam);
     }
 
     @PatchMapping("/{bookingId}")
-    public  BookingDto approveRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId,
+    public  BookingDto approveRequest(@RequestHeader(HEADER) Long userId, @PathVariable Long bookingId,
                                       @RequestParam Boolean approved) {
-        //Подтверждение или отклонение запроса на бронирование
         return bookingService.approveBookingRequest(userId, bookingId, approved);
     }
 }

@@ -19,13 +19,13 @@ public class Item {
     @Column(name = "item_id")
     long id;
 
-    @Column(nullable = false)
+   // @Column(nullable = false)
     String name;
 
-    @Column(nullable = false)
+  //  @Column(nullable = false)
     String description;
 
-    @Column(nullable = false)
+ //   @Column(nullable = false)
     Boolean available;
 
     @ManyToOne

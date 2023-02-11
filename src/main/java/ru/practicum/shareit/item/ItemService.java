@@ -116,11 +116,7 @@ public class ItemService {
                new BadRequestException("Предмет не был забронирован"));
         Comment comment = commentMapper.toComment(commentDto, author, item);
         comment.setCreated(LocalDateTime.now());
-        comment.setItem(item);
-//        commentDto.setCreated(LocalDateTime.now());
-//        commentDto.setAuthorName(author.getName());
-//        commentDto.se(item);
-//        commentDto.setCreated(LocalDateTime.now());
+       // comment.setItem(item);
 
         commentRepository.save(comment);
         log.warn("комментарий" + comment);
@@ -155,19 +151,14 @@ public class ItemService {
     }
 
     private ItemBookingDto setComments(ItemBookingDto itemBookingDto, long itemId) {
-        List<CommentDto> commentDtos = commentRepository.findAllById(itemId).stream()
+        List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId).stream()
                 .map(commentMapper::toCommentDto)
                 .collect(Collectors.toList());
         itemBookingDto.setComments(commentDtos);
         return itemBookingDto;
     }
 
-//    private ItemBookingDto setComments(ItemBookingDto itemDtoBooking, long itemId) {
-//        List<CommentDto> commentDtos = commentRepository.findAllById(itemId).stream()
-//                .map(CommentMapper::toCommentDto)
-//                .collect(Collectors.toList());
-//        itemDtoBooking.setComments(commentDtos);
-//        return itemDtoBooking;
+
 
 
 
