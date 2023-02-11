@@ -1,13 +1,9 @@
 package ru.practicum.shareit.item.Comment;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.Comment.Comment;
-import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
-import java.util.List;
-import java.util.stream.Collectors;
 @Component
 public class CommentMapper {
 
@@ -25,12 +21,5 @@ public class CommentMapper {
                 comment.getText(),
                 comment.getCreated());
     }
-
-//    @Override
-//    public List<CommentDTO> toDTOList(List<Comment> comments) {
-//        return comments.stream()
-//                .map(this::toDTO)
-//                .collect(Collectors.toList());
-//    }
 
 }

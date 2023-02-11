@@ -6,14 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicatedEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDto;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -21,8 +15,6 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
-    //private final UserMapper userMapper;
-
 
     public List<User> getAll() {
         return userRepository.findAll();

@@ -35,11 +35,10 @@ public class ItemService {
     private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
-    private final BookingMapper bookingMapper;
 
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = UserMapper.toUser(userService.getById(userId));
-        Item item = itemRepository.save(itemMapper.toItem(itemDto, null, owner));
+        Item item = itemRepository.save(itemMapper.toItem(itemDto, owner));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -47,15 +46,13 @@ public class ItemService {
     public ItemBookingDto getByItemId(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Предмет с id " + itemId + " не найден"));
-       //ItemDto itemDto = ItemMapper.toItemDto(item);
-//        List<Comment> comments = commentRepository.findAllById(itemId, Sort.by("id"));
-//        itemDto.setComments(CommentMapper.toCommentDto(comments));
+
         ItemBookingDto newItemDto = setComments(setBookings(userId, item), itemId);
         log.warn("Резульатат " + newItemDto.getComments());
         return newItemDto;
     }
 
-    public List<Item> getAll(){
+    public List<Item> getAll() {
         return itemRepository.findAll();
     }
 
@@ -85,8 +82,6 @@ public class ItemService {
 
     public List<ItemBookingDto> getAllByOwner(long ownerId) {
         userService.getById(ownerId);
-        List<Item> items = itemRepository.getAllByOwnerIdOrderByIdAsc(ownerId);
-       // return items;
 
         return itemRepository.getAllByOwnerIdOrderByIdAsc(ownerId).stream()
                 .map(item -> setBookings(ownerId, item))
@@ -95,19 +90,16 @@ public class ItemService {
 
     public List<Item> search(String text) {
         List<Item> items = new ArrayList<>();
-
         if(text.isBlank() || text.isEmpty()){
             return items;
         }
-
         text.toLowerCase();
-
         items = itemRepository.search(text);
         return items;
     }
 
     @Transactional
-    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto){
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         User author = UserMapper.toUser(userService.getById(userId));
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Предмет с id " + itemId + " не найден"));
@@ -116,7 +108,6 @@ public class ItemService {
                new BadRequestException("Предмет не был забронирован"));
         Comment comment = commentMapper.toComment(commentDto, author, item);
         comment.setCreated(LocalDateTime.now());
-       // comment.setItem(item);
 
         commentRepository.save(comment);
         log.warn("комментарий" + comment);

@@ -20,18 +20,18 @@ public class Comment {
     @Column(name = "id")
     long id;
 
-    @Column//(nullable = false)
+    @Column
     String text;
 
-    @ManyToOne//(cascade = CascadeType.REFRESH)
+    @ManyToOne
     @JoinColumn(name = "item_id")
-    Item item; // посмотреть тут ошибку!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Item item;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")//, nullable = false)
+    @JoinColumn(name = "user_id")
     User author;
 
-    @Column//(nullable = false)
+    @Column
     LocalDateTime created;
 
 

@@ -9,13 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    @Query("select b from Booking b where ( " +
-            ":start <= b.start and b.start <= :end or " +
-            ":start <= b.end and b.end <= :end) and " +
-            "b.item.id = :itemId and " +
-            "b.status = 'APPROVED'")
-    List<Booking> findAllByDateAndId(Long itemId, LocalDateTime start, LocalDateTime end);
-
     List<Booking> findAllByBookerId(Long bookerId);
 
     List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status);
