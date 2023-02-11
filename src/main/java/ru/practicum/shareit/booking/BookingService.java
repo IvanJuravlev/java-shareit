@@ -64,7 +64,7 @@ public class BookingService {
         Long bookerId = booking.getBooker().getId();
         Long ownerId = booking.getItem().getOwner().getId();
 
-        if(!userId.equals(bookerId) && !userId.equals(ownerId)) {
+        if (!userId.equals(bookerId) && !userId.equals(ownerId)) {
             throw new NotFoundException("У пользователя " + userId + " нет доступа к бронированию " + bookingId);
         }
         return BookingMapper.toBookingDto(booking);
@@ -155,8 +155,7 @@ public class BookingService {
             }
             if (approved) {
                 booking.setStatus(BookingStatus.APPROVED);
-            }
-            else booking.setStatus(BookingStatus.REJECTED);
+            } else booking.setStatus(BookingStatus.REJECTED);
 
             return BookingMapper.toBookingDto(booking);
      }

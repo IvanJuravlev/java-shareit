@@ -57,7 +57,7 @@ public class ItemService {
     }
 
     @Transactional
-    public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto){
+    public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Предмет с id " + itemId + " не найден"));
 
@@ -90,7 +90,7 @@ public class ItemService {
 
     public List<Item> search(String text) {
         List<Item> items = new ArrayList<>();
-        if(text.isBlank() || text.isEmpty()){
+        if (text.isBlank() || text.isEmpty()) {
             return items;
         }
         text.toLowerCase();
