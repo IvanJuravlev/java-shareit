@@ -23,7 +23,7 @@ public class UserService {
 
     public UserDto getById(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new NotFoundException("Пользователя с id " + id + " несуществует"));
+                new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
         return UserMapper.toUserDto(user);
     }
 
@@ -38,7 +38,7 @@ public class UserService {
     @Transactional
     public UserDto update(long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new NotFoundException("Пользователя с id " + id + " несуществует"));
+                new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
 
         if (userDto.getEmail() != null) {
             checkIfEmailExists(userDto.getEmail());
@@ -54,13 +54,13 @@ public class UserService {
     @Transactional
     public void delete(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new NotFoundException("Пользователя с id " + id + " несуществует"));
+                new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
         userRepository.deleteById(id);
     }
 
     private void checkIfEmailExists(String email) {
         if (userRepository.existsByEmail(email)) {
-            String message = "Пользователь таким с email " + email + " уже существует";
+            String message = String.format("Пользователь таким с email %s уже существует", email);
             log.warn(message);
             throw new DuplicatedEmailException(message);
         }

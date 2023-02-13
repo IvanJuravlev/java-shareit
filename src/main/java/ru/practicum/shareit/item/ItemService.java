@@ -45,10 +45,9 @@ public class ItemService {
 
     public ItemBookingDto getByItemId(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Предмет с id " + itemId + " не найден"));
+                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
 
         ItemBookingDto newItemDto = setComments(setBookings(userId, item), itemId);
-        log.warn("Резульатат " + newItemDto.getComments());
         return newItemDto;
     }
 
@@ -59,7 +58,7 @@ public class ItemService {
     @Transactional
     public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Предмет с id " + itemId + " не найден"));
+                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
 
         if (item.getOwner().getId() == userId) {
             if (itemUpdateDto.getName() != null) {
@@ -101,7 +100,7 @@ public class ItemService {
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         User author = UserMapper.toUser(userService.getById(userId));
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Предмет с id " + itemId + " не найден"));
+                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
 
         bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(() ->
                new BadRequestException("Предмет не был забронирован"));
@@ -109,13 +108,13 @@ public class ItemService {
         comment.setCreated(LocalDateTime.now());
 
         commentRepository.save(comment);
-        log.warn("комментарий" + comment);
+        log.warn("Добавлен комментарий {} ", comment);
         return commentMapper.toCommentDto(comment);
     }
 
     public void delete(long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Предмет с id " + itemId + " не найден"));
+                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
 
         itemRepository.delete(item);
         log.info("Предмет с id {} удален", itemId);

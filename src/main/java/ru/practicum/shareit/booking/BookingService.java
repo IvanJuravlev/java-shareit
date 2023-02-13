@@ -58,14 +58,14 @@ public class BookingService {
     }
 
     public BookingDto findById(Long userId, Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException(
-                "Бронирование с id " + bookingId + " не найдено!"));
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new NotFoundException(String.format("Бронирование с %x не найдено", bookingId)));
 
         Long bookerId = booking.getBooker().getId();
         Long ownerId = booking.getItem().getOwner().getId();
 
         if (!userId.equals(bookerId) && !userId.equals(ownerId)) {
-            throw new NotFoundException("У пользователя " + userId + " нет доступа к бронированию " + bookingId);
+            throw new NotFoundException(String.format("У пользователя %x нет доступа к бронированию %x", userId, bookingId));
         }
         return BookingMapper.toBookingDto(booking);
     }
