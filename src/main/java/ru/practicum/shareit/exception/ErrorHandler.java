@@ -31,4 +31,19 @@ public class ErrorHandler {
         log.warn("404 {}", exception.getMessage());
         return exception.getMessage();
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handlerBedRequestException(final BadRequestException exception) {
+        log.warn("404 {}", exception.getMessage());
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleNotSupportedStateException(final NotSupportedStateException exception) {
+        log.error("Incorrect state {}", exception.getMessage());
+
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", exception.getMessage());
+    }
 }
