@@ -43,14 +43,37 @@ public class ItemRequestService {
         return itemRequestMapper.toItemRequestDto(itemRequest);
     }
 
-    public List<ItemRequestDto> getOwnRequests(long userId, int from, int size) {
+    public List<ItemRequestDto> getOtherRequests(long userId, int from, int size) {
         userService.getById(userId);
-        Pageable pageable = PageRequest.of(from, size, Sort.by("created"));
-        List<ItemRequestDto> itemRequestDtoList = itemRequestRepository.findAllByRequesterIdNot(userId, pageable).stream()
+        Pageable pageable = PageRequest.of(from, size);
+        List<ItemRequestDto> itemRequestDtoList = itemRequestRepository
+                .findAllByRequesterIdIsNotOrderByCreatedDesc(userId, pageable).stream()
                 .map(itemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
         return itemRequestDtoList;
     }
+
+    public List<ItemRequestDto> getOnwRequests(long userId) {
+        userService.getById(userId);
+        List<ItemRequestDto> itemRequestDtoList = itemRequestRepository
+                .findAllByRequesterIdOrderByCreatedDesc(userId)
+                .stream()
+                .map(itemRequestMapper::toItemRequestDto)
+                .collect(Collectors.toList());
+        return itemRequestDtoList;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

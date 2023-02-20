@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS items (
     description varchar(200) NOT NULL,
     available boolean NOT NULL,
     user_id bigint NOT NULL,
-    CONSTRAINT fk_items_user_id FOREIGN KEY(user_id) REFERENCES users (user_id) ON DELETE CASCADE
+    request_id bigint,
+    CONSTRAINT fk_items_user_id FOREIGN KEY(user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_items_request_id FOREIGN KEY(request_id) REFERENCES requests (request_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bookings (

@@ -18,4 +18,5 @@ public class ItemDto {
     String description;
     @NotNull
     Boolean available;
+    long request;
 }

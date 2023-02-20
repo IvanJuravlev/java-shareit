@@ -8,6 +8,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
@@ -30,8 +32,10 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId) {
-        return itemService.getAllByOwner(ownerId);
+    public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId,
+                                              @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                              @Positive @RequestParam(defaultValue = "10") int size) {
+        return itemService.getAllByOwner(ownerId, from, size);
     }
 
     @GetMapping(itemPath)
@@ -40,8 +44,10 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam String text) {
-        return itemService.search(text);
+    public List<Item> searchItem(@RequestParam String text,
+                                 @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                 @Positive @RequestParam(defaultValue = "10") int size) {
+        return itemService.search(text, from, size);
     }
 
     @DeleteMapping("{id}")

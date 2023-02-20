@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
-    List<ItemRequest> findAllByRequesterId(long userId);
-    List<ItemRequest> findAllByRequesterIdNot(long userId, Pageable pageable);
+    List<ItemRequest> findAllByRequesterIdOrderByCreatedDesc(long userId);
+    List<ItemRequest> findAllByRequesterIdIsNotOrderByCreatedDesc(long userId, Pageable pageable);
 }

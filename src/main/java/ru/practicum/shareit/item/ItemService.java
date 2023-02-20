@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -15,6 +17,7 @@ import ru.practicum.shareit.item.Comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
@@ -38,7 +41,8 @@ public class ItemService {
 
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = UserMapper.toUser(userService.getById(userId));
-        Item item = itemRepository.save(itemMapper.toItem(itemDto, owner));
+        ItemRequest itemRequest = null;
+        Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -51,9 +55,10 @@ public class ItemService {
         return newItemDto;
     }
 
-    public List<Item> getAll() {
-        return itemRepository.findAll();
-    }
+//    public List<ItemBookingDto> getAll(long userId, int from, int size) {
+//        i
+//        return itemRepository.findAll();
+//    }
 
     @Transactional
     public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto) {
@@ -79,20 +84,22 @@ public class ItemService {
         return itemMapper.toItemDto(item);
     }
 
-    public List<ItemBookingDto> getAllByOwner(long ownerId) {
+    public List<ItemBookingDto> getAllByOwner(long ownerId, int from, int size) {
         userService.getById(ownerId);
-
-        return itemRepository.getAllByOwnerIdOrderByIdAsc(ownerId).stream()
+        Pageable pageable = PageRequest.of(from, size);
+        List<ItemBookingDto> itemBookingDtoList = itemRepository.getAllByOwnerIdOrderByIdAsc(ownerId, pageable).stream()
                 .map(item -> setBookings(ownerId, item))
                 .collect(Collectors.toList());
+        return itemBookingDtoList;
     }
 
-    public List<Item> search(String text) {
+    public List<Item> search(String text, int from, int size) {
         List<Item> items = new ArrayList<>();
         if (text.isBlank() || text.isEmpty()) {
             return items;
         }
-        items = itemRepository.search(text.toLowerCase());
+        Pageable pageable = PageRequest.of(from, size);
+        items = itemRepository.search(text.toLowerCase(), pageable);
         return items;
     }
 
@@ -146,21 +153,5 @@ public class ItemService {
         itemBookingDto.setComments(commentDtos);
         return itemBookingDto;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
