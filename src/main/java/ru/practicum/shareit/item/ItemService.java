@@ -18,6 +18,7 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemService {
+    private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
@@ -39,9 +41,16 @@ public class ItemService {
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
 
+
+    @Transactional
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = UserMapper.toUser(userService.getById(userId));
         ItemRequest itemRequest = null;
+        Long itemRequestId = itemDto.getRequest();
+        if(itemRequestId != null) {
+            itemRequest = itemRequestRepository.findById(itemRequestId).orElseThrow(()->
+                    new NotFoundException(String.format("Запроса с id %x не существует", itemRequestId)));
+        }
         Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
@@ -55,10 +64,6 @@ public class ItemService {
         return newItemDto;
     }
 
-//    public List<ItemBookingDto> getAll(long userId, int from, int size) {
-//        i
-//        return itemRepository.findAll();
-//    }
 
     @Transactional
     public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto) {

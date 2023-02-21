@@ -15,7 +15,7 @@ public class UserController {
     private final String idPath = "/{id}";
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAll();
     }
 
