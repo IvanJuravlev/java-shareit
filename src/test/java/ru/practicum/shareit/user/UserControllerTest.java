@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserController.class)
 public class UserControllerTest {
     private UserDto userDto;
-    private List<UserDto> userDtoList;
 
     @Autowired
     ObjectMapper mapper;

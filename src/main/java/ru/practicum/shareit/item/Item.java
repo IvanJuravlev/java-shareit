@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

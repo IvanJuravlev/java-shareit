@@ -8,11 +8,12 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ItemMapper {
 
-    public Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
+    public Item toItem(ItemDto itemDto, User user,ItemRequest itemRequest) {
         return new Item(itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
@@ -21,9 +22,11 @@ public class ItemMapper {
                 itemRequest);
     }
 
-    public ItemDto toItemDto(Item item) {
+    public static ItemDto toItemDto(Item item) {
         Long requestId = null;
-        if (item.getItemRequest() != null) requestId = item.getItemRequest().getId();
+        if (item.getItemRequest() != null) {
+            requestId = item.getItemRequest().getId();
+        }
         return new ItemDto(item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -39,5 +42,14 @@ public class ItemMapper {
                 null,
                 null,
                 new ArrayList<>());
+    }
+
+    public static List<ItemDto> toItemDto(Iterable<Item> items) {
+        List<ItemDto> itemDtoList = new ArrayList<>();
+
+        for (Item item : items) {
+            itemDtoList.add(toItemDto(item));
+        }
+        return itemDtoList;
     }
 }

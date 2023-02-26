@@ -46,12 +46,13 @@ public class ItemService {
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = UserMapper.toUser(userService.getById(userId));
         ItemRequest itemRequest = null;
-        Long itemRequestId = itemDto.getRequest();
+        Long itemRequestId = itemDto.getRequestId();
         if(itemRequestId != null) {
             itemRequest = itemRequestRepository.findById(itemRequestId).orElseThrow(()->
                     new NotFoundException(String.format("Запроса с id %x не существует", itemRequestId)));
         }
         Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
+      //  Item item = itemRepository.save(itemMapper.toItem(itemDto, owner));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -66,19 +67,19 @@ public class ItemService {
 
 
     @Transactional
-    public ItemDto update(long userId, long itemId, ItemUpdateDto itemUpdateDto) {
+    public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException(String.format("Предмет id %x не найден", itemId)));
 
         if (item.getOwner().getId() == userId) {
-            if (itemUpdateDto.getName() != null) {
-                item.setName(itemUpdateDto.getName());
+            if (itemDto.getName() != null) {
+                item.setName(itemDto.getName());
             }
-            if (itemUpdateDto.getDescription() != null) {
-                item.setDescription(itemUpdateDto.getDescription());
+            if (itemDto.getDescription() != null) {
+                item.setDescription(itemDto.getDescription());
             }
-            if (itemUpdateDto.getAvailable() != null) {
-                item.setAvailable(itemUpdateDto.getAvailable());
+            if (itemDto.getAvailable() != null) {
+                item.setAvailable(itemDto.getAvailable());
             }
             itemRepository.save(item);
             log.info("Item updated");

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "bookings", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
