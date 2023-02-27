@@ -153,7 +153,7 @@ public class BookingService {
         int page = from / size;
         Pageable pageRequest = PageRequest.of(page, size);
         Pageable pageable = PageRequest.of(from, size);
-        List<Booking> userBookings;
+        List<Booking> userBookings = new ArrayList<>();
 
         switch (bookingState) {
             case ALL:

@@ -37,7 +37,7 @@ public class BookingController {
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
                                             @PositiveOrZero @RequestParam(defaultValue = "0", required = false) int from,
                                             @Positive @RequestParam(defaultValue = "20", required = false) int size) {
-        return bookingService.getByBooker(userId, stateParam, from, size);
+        return bookingService.findByBooker(userId, stateParam, from, size);
     }
 
   //  @GetMapping

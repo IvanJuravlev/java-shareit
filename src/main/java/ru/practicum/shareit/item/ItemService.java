@@ -25,6 +25,7 @@ import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,6 @@ public class ItemService {
                     new NotFoundException(String.format("Запроса с id %x не существует", itemRequestId)));
         }
         Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
-      //  Item item = itemRepository.save(itemMapper.toItem(itemDto, owner));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -99,14 +99,17 @@ public class ItemService {
         return itemBookingDtoList;
     }
 
-    public List<Item> search(String text, int from, int size) {
+    public List<ItemDto> search(String text, int from, int size) {
         List<Item> items = new ArrayList<>();
         if (text.isBlank() || text.isEmpty()) {
-            return items;
+            return Collections.emptyList();
         }
         Pageable pageable = PageRequest.of(from, size);
         items = itemRepository.search(text.toLowerCase(), pageable);
-        return items;
+        return itemRepository.search(text.toLowerCase(), pageable)
+                .stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -154,7 +157,7 @@ public class ItemService {
 
     private ItemBookingDto setComments(ItemBookingDto itemBookingDto, long itemId) {
         List<CommentDto> commentDtos = commentRepository.findAllByItemId(itemId).stream()
-                .map(commentMapper::toCommentDto)
+                .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
         itemBookingDto.setComments(commentDtos);
         return itemBookingDto;

@@ -34,7 +34,7 @@ public class ItemMapper {
                 requestId);
     }
 
-    public  ItemBookingDto toItemBookingDto(Item item) {
+    public static ItemBookingDto toItemBookingDto(Item item) {
         return new ItemBookingDto(item.getId(),
                 item.getName(),
                 item.getDescription(),

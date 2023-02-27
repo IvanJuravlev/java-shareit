@@ -44,7 +44,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam String text,
+    public List<ItemDto> searchItem(@RequestParam String text,
                                  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                  @Positive @RequestParam(defaultValue = "10") int size) {
         return itemService.search(text, from, size);
