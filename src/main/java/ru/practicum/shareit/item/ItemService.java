@@ -100,12 +100,12 @@ public class ItemService {
     }
 
     public List<ItemDto> search(String text, int from, int size) {
-        List<Item> items = new ArrayList<>();
+      //  List<Item> items = new ArrayList<>();
         if (text.isBlank() || text.isEmpty()) {
             return Collections.emptyList();
         }
         Pageable pageable = PageRequest.of(from, size);
-        items = itemRepository.search(text.toLowerCase(), pageable);
+       // items = itemRepository.search(text.toLowerCase(), pageable);
         return itemRepository.search(text.toLowerCase(), pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)

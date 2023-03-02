@@ -44,12 +44,12 @@ public class ItemMapper {
                 new ArrayList<>());
     }
 
-    public static List<ItemDto> toItemDto(Iterable<Item> items) {
-        List<ItemDto> itemDtoList = new ArrayList<>();
-
-        for (Item item : items) {
-            itemDtoList.add(toItemDto(item));
-        }
-        return itemDtoList;
-    }
+//    public static List<ItemDto> toItemDto(Iterable<Item> items) {
+//        List<ItemDto> itemDtoList = new ArrayList<>();
+//
+//        for (Item item : items) {
+//            itemDtoList.add(toItemDto(item));
+//        }
+//        return itemDtoList;
+//    }
 }

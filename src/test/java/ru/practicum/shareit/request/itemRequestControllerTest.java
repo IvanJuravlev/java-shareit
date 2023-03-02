@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import ru.practicum.shareit.user.User;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-@WebMvcTest
+@WebMvcTest(ItemRequestController.class)
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
 public class itemRequestControllerTest {
@@ -60,7 +62,7 @@ public class itemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.requesterId").value(1L))
-                .andExpect(jsonPath("$.description").value("description"));
+                .andExpect(jsonPath("$.description").value("someDescription"));
     }
 
     @Test
@@ -76,6 +78,38 @@ public class itemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].requesterId").value(1L))
-                .andExpect(jsonPath("$[0].description").value("description"));
+                .andExpect(jsonPath("$[0].description").value("someDescription"));
+    }
+
+    @Test
+    void getRequestInfoTest() throws Exception {
+        ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
+        ItemRequestDto req = ItemRequestMapper.toItemRequestDto(itemRequest);
+        when(itemRequestService.getById(anyLong(), anyLong())).thenReturn(req);
+
+        mockMvc.perform(get("/requests/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HEADER, 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.requesterId").value(1L))
+                .andExpect(jsonPath("$.description").value("someDescription"));
+    }
+
+    @Test
+    void getRequestsListTest() throws Exception {
+        ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
+        ItemRequestDto req = ItemRequestMapper.toItemRequestDto(itemRequest);
+        when(itemRequestService.getOtherRequests(anyLong(), anyInt(), anyInt())).thenReturn(Collections.singletonList(req));
+
+        mockMvc.perform(get("/requests/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(HEADER, 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].requesterId").value(1L))
+                .andExpect(jsonPath("$[0].description").value("someDescription"));
     }
 }

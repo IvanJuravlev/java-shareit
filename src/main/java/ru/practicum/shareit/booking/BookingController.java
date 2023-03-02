@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
@@ -11,6 +13,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 //import static ru.practicum.shareit.ShareItApp.HEADER;
+
 
 
 @RestController
@@ -40,13 +43,6 @@ public class BookingController {
         return bookingService.findByBooker(userId, stateParam, from, size);
     }
 
-  //  @GetMapping
-//    public List<BookingDtoResponse> getByBooker(@RequestHeader(HEADER) long userId,
-//                                                @RequestParam(defaultValue = "ALL", required = false) String state,
-//                                                @PositiveOrZero @RequestParam(defaultValue = "0", required = false) int from,
-//                                                @Positive @RequestParam(defaultValue = "20", required = false) int size) {
-//        return bookingService.getByBooker(userId, state, from, size);
-//    }
 
     @GetMapping("/owner")
     public List<BookingDto> findItemBooking(@RequestHeader(HEADER) Long userId,

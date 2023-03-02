@@ -32,15 +32,18 @@ public class ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRequestMapper itemRequestMapper;
+
     private final UserService userService;
     private final ItemMapper itemMapper;
 
     public ItemRequestDto create(Long userId, PostItemRequestDto postItemRequestDto) {
+        log.info("Первая ошибка");
         User requester = UserMapper.toUser(userService.getById(userId));
-        ItemRequest itemRequest = itemRequestRepository.save(itemRequestMapper
+        log.info("Первая ошибка");
+        ItemRequest itemRequest = itemRequestRepository.save(ItemRequestMapper
                 .mapToItemRequest(requester, postItemRequestDto, LocalDateTime.now()));
         log.info("Запрос создан с id {}", itemRequest.getId());
-        return itemRequestMapper.toItemRequestDto(itemRequest);
+        return ItemRequestMapper.toItemRequestDto(itemRequest);
     }
 
     public ItemRequestDto getById(long requestId, long userId) {
@@ -53,9 +56,6 @@ public class ItemRequestService {
         ItemRequestDto itemRequestDtoResponse = ItemRequestMapper.toItemRequestDto(itemRequest);
         itemRequestDtoResponse.setItems(items);
         return itemRequestDtoResponse;
-//        ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
-//        setItemsToRequests(itemRequestDto);
-//        return itemRequestDto;
     }
 
     public List<ItemRequestDto> getOtherRequests(long userId, int from, int size) {
@@ -66,15 +66,6 @@ public class ItemRequestService {
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
         return setItemsToRequests(responseList);
-//        List<ItemRequest> itemRequests = itemRequestRepository
-//                .findAllByRequesterIdIsNotOrderByCreatedDesc(userId, pageable);
-//        List<ItemRequestDto> dtoItemRequests = itemRequestMapper.mapToItemRequestDto(itemRequests);
-//        dtoItemRequests.forEach(this::setItemsToRequests);
-//        List<ItemRequestDto> itemRequestDtoList = itemRequestRepository
-//                .findAllByRequesterIdIsNotOrderByCreatedDesc(userId, pageable).stream()
-//                .map(itemRequestMapper::toItemRequestDto)
-//                .collect(Collectors.toList());
-      //  return dtoItemRequests;
     }
 
     public List<ItemRequestDto> getOnwRequests(long userId) {
@@ -83,22 +74,8 @@ public class ItemRequestService {
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
         return setItemsToRequests(responseList);
-//        List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId);
-//        List<ItemRequestDto> dtoItemRequests = itemRequestMapper.mapToItemRequestDto(itemRequests);
-//        dtoItemRequests.forEach(this::setItemsToRequests);
-////        List<ItemRequestDto> itemRequestDtoList = itemRequestRepository
-////                .findAllByRequesterIdOrderByCreatedDesc(userId)
-////                .stream()
-////                .map(itemRequestMapper::toItemRequestDto)
-////                .collect(Collectors.toList());
-//        return dtoItemRequests;
     }
 
-
-//    private void setItemsToRequests(ItemRequestDto itemRequestDto) {
-//        List<Item> itemList = itemRepository.findAllByRequestId(itemRequestDto.getId());
-//        itemRequestDto.setItems(itemMapper.toItemDto(itemList));
-//    }
 
     private List<ItemRequestDto> setItemsToRequests(List<ItemRequestDto> itemRequestDtoResponseList) {
         Map<Long, ItemRequestDto> requests = itemRequestDtoResponseList.stream()

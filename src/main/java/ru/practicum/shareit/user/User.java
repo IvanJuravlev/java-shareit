@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 @Entity
 @Table(name = "users", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
