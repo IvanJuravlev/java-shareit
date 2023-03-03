@@ -78,7 +78,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void create() throws Exception {
+    void createTest() throws Exception {
         when(bookingService.create(anyLong(), any(ShortBookingDto.class)))
                 .thenReturn(booking1DtoResponse);
 
@@ -93,7 +93,7 @@ class BookingControllerTest {
 
 
     @Test
-    void getById() throws Exception {
+    void getByIdTest() throws Exception {
         when(bookingService.findById(anyLong(), anyLong()))
                 .thenReturn(booking1DtoResponse);
 
@@ -105,7 +105,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getByBooker() throws Exception {
+    void findByBookerTest() throws Exception {
         when(bookingService.findByBooker(anyLong(), any(String.class), anyInt(), anyInt()))
                 .thenReturn(List.of(booking1DtoResponse));
 
@@ -116,7 +116,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getByOwner() throws Exception {
+    void findItemBookingTest() throws Exception {
         when(bookingService.findItemBooking(anyLong(), any(String.class), anyInt(), anyInt()))
                 .thenReturn(List.of(booking1DtoResponse));
 

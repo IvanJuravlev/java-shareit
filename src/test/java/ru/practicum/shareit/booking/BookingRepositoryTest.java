@@ -26,28 +26,30 @@ class BookingRepositoryTest {
     @Autowired
     private BookingRepository bookingRepository;
 
-    User user = new User(
-            1L,
-            "name",
-            "email@email.ru");
-    User user2 = new User(
-            2L,
-            "name2",
-            "email2@email.ru");
-    Item item = new Item(
-            1L,
-            "name",
-            "description",
-            true,
-            user,
-            null);
-    Booking booking = new Booking(
-            1L,
-            LocalDateTime.now().minusHours(3),
-            LocalDateTime.now().minusHours(1),
-            item,
-            user2,
-            null);
+    private final User user =  User.builder()
+            .name("name")
+            .email("email@email.ru")
+            .build();
+
+    private final User user2 = User.builder()
+            .name("name2")
+            .email("email2@email.ru")
+            .build();
+    private final Item item = Item.builder()
+            .name("name")
+            .description("description")
+            .available(true)
+            .owner(user)
+            .itemRequest(null)
+            .build();
+
+    private final Booking booking = Booking.builder()
+            .start(LocalDateTime.now().minusHours(3))
+            .end(LocalDateTime.now().minusHours(1))
+            .item(item)
+            .booker(user2)
+            .status(null)
+            .build();
 
     @Test
     void contextLoads() {
@@ -56,6 +58,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllByBookerIdOrderByStartDescTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -70,6 +73,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllItemBookingCurrDateTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -84,6 +88,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllItemBookingEndIsBeforeTest1() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -98,6 +103,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllItemBookingEndIsBeforeTest2() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -127,6 +133,7 @@ class BookingRepositoryTest {
 
     @Test
     void findByItemOwnerIdOrderByStartDescTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -141,6 +148,7 @@ class BookingRepositoryTest {
 
     @Test
     void findByItemOwnerCurrentTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -155,6 +163,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllItemBookingEndIsBeforeTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -169,6 +178,7 @@ class BookingRepositoryTest {
 
     @Test
     void findAllItemBookingAndStartIsAfterTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
@@ -198,6 +208,7 @@ class BookingRepositoryTest {
 
     @Test
     void findFirstByBookerAndItemIdAndEndBeforeTest() {
+        booking.setStatus(BookingStatus.WAITING);
         em.persist(user);
         em.persist(user2);
         em.persist(item);
