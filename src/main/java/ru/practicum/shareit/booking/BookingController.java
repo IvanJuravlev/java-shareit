@@ -42,7 +42,7 @@ public class BookingController {
     public List<BookingDto> findItemBooking(@RequestHeader(HEADER) Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
                                             @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                            @Positive @RequestParam(defaultValue = "20") int size){
+                                            @Positive @RequestParam(defaultValue = "20") int size) {
         return bookingService.findItemBooking(userId, stateParam, from, size);
     }
 

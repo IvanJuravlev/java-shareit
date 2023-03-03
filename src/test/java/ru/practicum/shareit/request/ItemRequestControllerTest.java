@@ -24,7 +24,7 @@ import java.util.Collections;
 @WebMvcTest(ItemRequestController.class)
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
-public class itemRequestControllerTest {
+public class ItemRequestControllerTest {
 
     @MockBean
     private ItemRequestService itemRequestService;

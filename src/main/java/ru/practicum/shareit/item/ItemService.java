@@ -47,8 +47,8 @@ public class ItemService {
         User owner = UserMapper.toUser(userService.getById(userId));
         ItemRequest itemRequest = null;
         Long itemRequestId = itemDto.getRequestId();
-        if(itemRequestId != null) {
-            itemRequest = itemRequestRepository.findById(itemRequestId).orElseThrow(()->
+        if (itemRequestId != null) {
+            itemRequest = itemRequestRepository.findById(itemRequestId).orElseThrow(() ->
                     new NotFoundException(String.format("Запроса с id %x не существует", itemRequestId)));
         }
         Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
