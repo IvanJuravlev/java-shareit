@@ -143,7 +143,6 @@ public class BookingService {
                 break;
             default:
                 throw new NotSupportedStateException("Unknown state: " + state);
-              //  bookings = new ArrayList<>();
         }
 
         bookings.sort(Comparator.comparing(Booking::getStart).reversed());
