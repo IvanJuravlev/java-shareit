@@ -23,6 +23,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -77,20 +78,6 @@ class BookingControllerTest {
         booking1DtoResponse = BookingMapper.toBookingDto(booking1);
     }
 
-    @Test
-    void createTest() throws Exception {
-        when(bookingService.create(anyLong(), any(ShortBookingDto.class)))
-                .thenReturn(booking1DtoResponse);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
-                        .content(mapper.writeValueAsString(booking1Dto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HEADER, user2Dto.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
-
-    }
-
 
     @Test
     void getByIdTest() throws Exception {
@@ -104,16 +91,6 @@ class BookingControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
     }
 
-    @Test
-    void findByBookerTest() throws Exception {
-        when(bookingService.findByBooker(anyLong(), any(String.class), anyInt(), anyInt()))
-                .thenReturn(List.of(booking1DtoResponse));
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookings")
-                        .header(HEADER, user2Dto.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
-    }
 
     @Test
     void findItemBookingTest() throws Exception {

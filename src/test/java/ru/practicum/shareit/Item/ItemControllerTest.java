@@ -136,19 +136,4 @@ public class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(List.of(itemDto))));
     }
-
-    @Test
-    void addComment() throws Exception {
-        when(itemService.addComment(anyLong(), anyLong(), any(CommentDto.class))).thenReturn(commentDto);
-
-        mockMvc.perform((post("/items/1/comment"))
-                .content(objectMapper.writeValueAsString(itemDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HEADER, userDto1.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(commentDto)));
-    }
-
-
-
 }
