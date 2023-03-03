@@ -1,146 +1,93 @@
 package ru.practicum.shareit.request;
 
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.PostItemRequestDto;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserDto;
+import ru.practicum.shareit.user.UserService;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+@SpringBootTest
+@Transactional
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestServiceTest {
 
-    @InjectMocks
-    private ItemRequestService itemRequestService;
+    private final  ItemRequestService itemRequestService;
+    private final  UserService userService;
+    private UserDto userDto1;
+    private UserDto userDto2;
+    PostItemRequestDto postItemRequestDto;
 
-    @Mock
-    private ItemRepository itemRepository;
-
-    @Mock
-    private ItemRequestRepository requestRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    private LocalDateTime now = LocalDateTime.now();
-
-    private User user = new User(
-            1L,
-            "name",
-            "email@email.ru");
-
-    private ItemRequestDto itemRequestDto = new ItemRequestDto(
-            1L,
-            "description",
-            1L,
-            LocalDateTime.now(),
-            null);
-
-    private PostItemRequestDto postItemRequestDto = new PostItemRequestDto(
-            "description"
-    );
-
-    private ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
-
-
-    private Item item = new Item(
-            1L,
-            "name",
-            "description",
-            true,
-            user,
-            null);
-
-
-    @Test
-    void create() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
-
-        ItemRequest itemRequest1 = ItemRequestMapper.toItemRequest(itemRequestDto, user);
-        when(requestRepository.save(any())).thenReturn(itemRequest1);
-
-        ItemRequestDto newDto = itemRequestService.create(user.getId(), postItemRequestDto);
-        itemRequestDto.setCreated(newDto.getCreated());
-
-        assertEquals(itemRequestDto.getId(), newDto.getId());
-        verify(requestRepository, Mockito.times(1)).save(any());
-
+    @BeforeEach
+    void beforeEach() {
+        postItemRequestDto = new PostItemRequestDto();
+        postItemRequestDto.setDescription("req description");
+        userDto1 = new UserDto(101L, "user1", "user1@mail.ru");
+        userDto2 = new UserDto(102L, "user2", "user2@mail.ru");
     }
 
     @Test
-    void createWhenUserNotFound() {
-        when(userRepository.findById(anyLong())).thenThrow(new NotFoundException("User not found"));
-
-        NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> itemRequestService.create(1L, postItemRequestDto));
-        assertEquals("User not found", exception.getMessage());
+    void shouldCreateItemRequest() {
+        UserDto newUserDto = userService.create(userDto1);
+        ItemRequestDto resultDTO = itemRequestService.create(newUserDto.getId(), postItemRequestDto);
+        assertThat(resultDTO.getDescription(), equalTo(postItemRequestDto.getDescription()));
     }
 
     @Test
-    void getOwnRequestsWhenUserFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
-
-        List<ItemRequestDto> responseList = itemRequestService.getOnwRequests(user.getId());
-        assertTrue(responseList.isEmpty());
-        verify(requestRepository).findAllByRequesterIdOrderByCreatedDesc(anyLong());
+    void shouldExceptionWhenCreateItemRequestWithWrongUser() {
+        NotFoundException exp = assertThrows(NotFoundException.class,
+                () -> itemRequestService.create(100500L, postItemRequestDto));
+        assertFalse(exp.getMessage().isEmpty());
     }
 
 
     @Test
-    void getOtherRequests() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
-        when(requestRepository.findById(anyLong())).thenThrow(new NotFoundException("Запрос не найден"));
-
-        NotFoundException exception = assertThrows(NotFoundException.class, () ->
-                itemRequestService.getOtherRequests(user.getId(), 1, 2)
-        );
-
-        assertEquals("Запрос не найден", exception.getMessage());
+    void shouldExceptionWhenGetItemRequestWithWrongId() {
+        UserDto firstUserDto = userService.create(userDto1);
+        NotFoundException exp = assertThrows(NotFoundException.class,
+                () -> itemRequestService.getById(firstUserDto.getId(), 100500L));
+        assertFalse(exp.getMessage().isEmpty());
     }
 
     @Test
-    void getOtherRequestsTest() {
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(user));
+    void shouldReturnAllItemRequests() {
+        UserDto firstUserDto = userService.create(userDto1);
+        UserDto newUserDto = userService.create(userDto2);
+        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
+        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
+        List<ItemRequestDto> listItemRequest = itemRequestService.getOtherRequests(firstUserDto.getId(), 0, 10);
+        assertThat(listItemRequest.size(), equalTo(2));
+    }
 
-        when(requestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any(Pageable.class)))
-                .thenReturn(List.of(itemRequest));
+    @Test
+    void shouldReturnOwnItemRequests() {
+        userService.create(userDto1);
+        UserDto newUserDto = userService.create(userDto2);
+        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
+        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
+        List<ItemRequestDto> listItemRequest = itemRequestService.getOnwRequests(newUserDto.getId());
+        System.out.println(listItemRequest.toString());
+        assertThat(listItemRequest.size(), equalTo(2));
+    }
 
-        List<ItemRequestDto> itemRequestDtos = itemRequestService.getOtherRequests(
-                user.getId(),
-                0,
-                10);
-
-        assertEquals(1, itemRequestDtos.size());
-        assertEquals(1, itemRequestDtos.get(0).getId());
-        assertEquals("description", itemRequestDtos.get(0).getDescription());
-        assertEquals(user.getId(), itemRequestDtos.get(0).getRequesterId());
-        assertEquals(Collections.emptyList(), itemRequestDtos.get(0).getItems());
+    @Test
+    void shouldReturnItemRequestById() {
+        UserDto firstUserDto = userService.create(userDto1);
+        ItemRequestDto newItemRequestDto = itemRequestService.create(firstUserDto.getId(), postItemRequestDto);
+        ItemRequestDto returnItemRequestDto = itemRequestService.getById(newItemRequestDto.getId(),
+                firstUserDto.getId());
+        assertThat(returnItemRequestDto.getDescription(), equalTo(postItemRequestDto.getDescription()));
     }
 
 }

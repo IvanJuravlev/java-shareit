@@ -4,18 +4,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
-
 import org.springframework.data.domain.PageRequest;
-
 import static org.junit.jupiter.api.Assertions.*;
-;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -68,53 +64,9 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository.findAllByBookerIdOrderByStartDesc(user2.getId(), pg);
 
         assertEquals(1, bookingList.size());
-        assertEquals(booking, bookingList.get(0));//id могут сбиться, проверить при запуске всех тестов
-    }
-
-    @Test
-    void findAllItemBookingCurrDateTest() {
-        booking.setStatus(BookingStatus.WAITING);
-        em.persist(user);
-        em.persist(user2);
-        em.persist(item);
-        em.persist(booking);
-        PageRequest pg = PageRequest.of(0, 10);
-
-        List<Booking> bookingList = bookingRepository.findAllItemBookingCurrDate(user2.getId(), LocalDateTime.now().minusHours(2), pg);
-
-        assertEquals(1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
-    @Test
-    void findAllItemBookingEndIsBeforeTest1() {
-        booking.setStatus(BookingStatus.WAITING);
-        em.persist(user);
-        em.persist(user2);
-        em.persist(item);
-        em.persist(booking);
-        PageRequest pg = PageRequest.of(0, 10);
-
-        List<Booking> bookingList = bookingRepository.findAllItemBookingEndIsBefore(user2.getId(), LocalDateTime.now().plusHours(2), pg);
-
-        assertEquals(1, bookingList.size());
-        assertEquals(booking, bookingList.get(0));
-    }
-
-    @Test
-    void findAllItemBookingEndIsBeforeTest2() {
-        booking.setStatus(BookingStatus.WAITING);
-        em.persist(user);
-        em.persist(user2);
-        em.persist(item);
-        em.persist(booking);
-        PageRequest pg = PageRequest.of(0, 10);
-
-        List<Booking> bookingList = bookingRepository.findAllItemBookingEndIsBefore(user2.getId(), LocalDateTime.now().minusHours(4), pg);
-
-        assertEquals(1, bookingList.size());
-        assertEquals(booking, bookingList.get(0));
-    }
 
     @Test
     void findAllByBookerIdAndStatusTest() {

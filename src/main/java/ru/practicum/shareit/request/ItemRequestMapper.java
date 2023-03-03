@@ -19,16 +19,6 @@ public class ItemRequestMapper {
                 itemRequestDto.getCreated());
     }
 
-    public List<ItemRequestDto> mapToItemRequestDto(Iterable<ItemRequest> itemRequests) {
-        List<ItemRequestDto> result = new ArrayList<>();
-
-        for (var el : itemRequests) {
-            result.add(toItemRequestDto(el));
-        }
-
-        return result;
-    }
-
     public static ItemRequestDto toItemRequestDto(ItemRequest itemRequest) {
         return new ItemRequestDto(itemRequest.getId(),
                 itemRequest.getDescription(),

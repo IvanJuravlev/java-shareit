@@ -28,8 +28,6 @@ import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 

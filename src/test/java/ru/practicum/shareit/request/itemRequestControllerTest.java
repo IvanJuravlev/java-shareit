@@ -66,7 +66,7 @@ public class itemRequestControllerTest {
     }
 
     @Test
-    void getRequestsInfoTest() throws Exception {
+    void getOnwRequestsTest() throws Exception {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
         ItemRequestDto req = ItemRequestMapper.toItemRequestDto(itemRequest);
         when(itemRequestService.getOnwRequests(anyLong())).thenReturn(Collections.singletonList(req));
@@ -82,7 +82,7 @@ public class itemRequestControllerTest {
     }
 
     @Test
-    void getRequestInfoTest() throws Exception {
+    void getByIdTest() throws Exception {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
         ItemRequestDto req = ItemRequestMapper.toItemRequestDto(itemRequest);
         when(itemRequestService.getById(anyLong(), anyLong())).thenReturn(req);
@@ -98,7 +98,7 @@ public class itemRequestControllerTest {
     }
 
     @Test
-    void getRequestsListTest() throws Exception {
+    void getOtherRequestsTest() throws Exception {
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
         ItemRequestDto req = ItemRequestMapper.toItemRequestDto(itemRequest);
         when(itemRequestService.getOtherRequests(anyLong(), anyInt(), anyInt())).thenReturn(Collections.singletonList(req));

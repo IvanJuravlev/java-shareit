@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -15,7 +13,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.PostItemRequestDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -30,11 +27,8 @@ import java.util.stream.Collectors;
 public class ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemRequestRepository itemRequestRepository;
-    private final UserRepository userRepository;
-    private final ItemRequestMapper itemRequestMapper;
 
     private final UserService userService;
-    private final ItemMapper itemMapper;
 
     public ItemRequestDto create(Long userId, PostItemRequestDto postItemRequestDto) {
         log.info("Первая ошибка");

@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.Comment.CommentMapper;
 import ru.practicum.shareit.item.Comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
@@ -24,7 +23,6 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,7 +85,6 @@ public class ItemService {
         } else {
             throw new NotFoundException("Вещь для обновления не найдена");
         }
-
         return itemMapper.toItemDto(item);
     }
 
@@ -101,12 +98,10 @@ public class ItemService {
     }
 
     public List<ItemDto> search(String text, int from, int size) {
-      //  List<Item> items = new ArrayList<>();
         if (text.isBlank() || text.isEmpty()) {
             return Collections.emptyList();
         }
         Pageable pageable = PageRequest.of(from, size);
-       // items = itemRepository.search(text.toLowerCase(), pageable);
         return itemRepository.search(text.toLowerCase(), pageable)
                 .stream()
                 .map(ItemMapper::toItemDto)

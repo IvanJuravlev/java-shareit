@@ -6,9 +6,7 @@ import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
-
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ItemMapper {
@@ -43,13 +41,4 @@ public class ItemMapper {
                 null,
                 new ArrayList<>());
     }
-
-//    public static List<ItemDto> toItemDto(Iterable<Item> items) {
-//        List<ItemDto> itemDtoList = new ArrayList<>();
-//
-//        for (Item item : items) {
-//            itemDtoList.add(toItemDto(item));
-//        }
-//        return itemDtoList;
-//    }
 }

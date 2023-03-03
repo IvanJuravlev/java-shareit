@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import org.springframework.data.domain.PageRequest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.mockito.Mock;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.NotSupportedStateException;
@@ -24,8 +22,6 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
-
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -289,7 +285,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getBookingInfoBookingNotFound() { //не покрывает почему-то
+    void getBookingInfoBookingNotFound() {
         when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         when(userRepository.findById(anyLong()))
@@ -335,13 +331,13 @@ class BookingServiceTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user1));
 
-        NotSupportedStateException exception = assertThrows(NotSupportedStateException.class,
+        assertThrows(NotSupportedStateException.class,
                 () -> bookingService.findByBooker(user1.getId(),
                         "UNKNOWN",
                         0,
                         10));
 
-       // assertEquals("Unknown state: UNKNOWN", exception.getMessage());
+
     }
 
     @Test
@@ -353,13 +349,12 @@ class BookingServiceTest {
 
         booking1.setBooker(user2);
 
-        NullPointerException exception = assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () -> bookingService.findByBooker(
                         5L,
                         "WAITING",
                         0,
                         10));
-     //   assertEquals("Пользователь не найден", exception.getMessage());
     }
 
 
@@ -376,7 +371,7 @@ class BookingServiceTest {
                         0,
                         10));
 
-      //  assertEquals("Unknown state: UNKNOWN", exception.getMessage());
+        assertEquals("Incorrect state", exception.getMessage());
     }
 
     @Test
@@ -390,6 +385,5 @@ class BookingServiceTest {
                         "WAITING",
                         0,
                         10));
-
     }
 }

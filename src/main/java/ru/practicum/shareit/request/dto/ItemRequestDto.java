@@ -16,7 +16,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequestDto {
     Long id;
-    //@NotBlank
     String description;
     Long requesterId;
     LocalDateTime created;

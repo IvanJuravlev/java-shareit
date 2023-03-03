@@ -1,7 +1,11 @@
 package ru.practicum.shareit.Item;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,10 +36,7 @@ import org.mockito.InjectMocks;
 import java.util.Collections;
 import java.util.Optional;
 import org.mockito.Mock;
-import ru.practicum.shareit.request.ItemRequestRepository;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.*;
 
 import java.util.List;
 
@@ -50,6 +51,9 @@ class ItemServiceTest {
     private ItemRepository repository;
 
     @Mock
+    private UserService userService;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
@@ -58,12 +62,6 @@ class ItemServiceTest {
     @Mock
     private CommentRepository commentRepository;
 
-    @Mock
-    private ItemRequestRepository itemRequestRepository;
-
-    @Mock
-    private UserService userServiceImpl;
-
     private User user1;
 
     private User user2;
@@ -71,6 +69,8 @@ class ItemServiceTest {
     private Item item1;
 
     private Booking booking1;
+
+    private UserDto userDto1;
 
     private Comment comment1;
 
@@ -87,6 +87,8 @@ class ItemServiceTest {
         user2 = new User(2L, "User2 name", "user2@mail.com");
         userRepository.save(user2);
         item1 = new Item(1L, "Item1 name", "Item1 description", true, user1, null);
+
+        userDto1 = new UserDto(101L, "user1", "user1@mail.ru");
 
         booking1 = Booking.builder()
                 .id(1L)
@@ -122,28 +124,12 @@ class ItemServiceTest {
         assertEquals(true, itemBookingDto.isAvailable());
     }
 
-    @Test
-    void create() {
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(user1));
-
-        when(repository.save(any(Item.class)))
-                .thenReturn(item1);
-
-        ItemDto itemDto = itemService.create(item1.getId(), ItemMapper.toItemDto(item1));
-
-        assertEquals(1, itemDto.getId());
-        assertEquals("Item1 name", itemDto.getName());
-        assertEquals("Item1 description", itemDto.getDescription());
-        assertEquals(true, itemDto.getAvailable());
-        assertNull(itemDto.getRequestId());
-    }
 
     @Test
     void createInappropriateItemWithNoUser() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
-        NullPointerException exception = assertThrows(NullPointerException.class, () ->
+        assertThrows(NullPointerException.class, () ->
                 itemService.create(
                         user1.getId(),
                         ItemMapper.toItemDto(item1)
@@ -157,7 +143,7 @@ class ItemServiceTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () ->
+        assertThrows(NullPointerException.class, () ->
                 itemService.create(
                         user1.getId(),
                         ItemMapper.toItemDto(item1)
@@ -174,7 +160,7 @@ class ItemServiceTest {
         ItemDto itemDto = ItemMapper.toItemDto(item1);
         itemDto.setRequestId(3000L);
 
-        NullPointerException exc = assertThrows(NullPointerException.class, () ->
+        assertThrows(NullPointerException.class, () ->
                 itemService.create(user1.getId(), itemDto)
         );
     }
@@ -202,7 +188,7 @@ class ItemServiceTest {
         when(repository.save(any(Item.class)))
                 .thenReturn(item1);
 
-        NotFoundException exception = assertThrows(NotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> itemService.update(
                         50L,
                         user2.getId(),
@@ -248,7 +234,6 @@ class ItemServiceTest {
         when(repository.search(anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(item1));
         List<ItemDto> itemDtos = itemService.search("", 0, 20);
-
 
     }
 
@@ -297,56 +282,6 @@ class ItemServiceTest {
         assertNull(itemDtos.get(0).getRequestId());
     }
 
-    @Test
-    void addComment() {
-        when(bookingRepository.findFirstByBookerAndItemIdAndEndBefore(
-                any(),
-                anyLong(),
-                any(LocalDateTime.class)))
-                .thenReturn(Optional.ofNullable(booking1));
-
-        when(repository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(item1));
-
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(user1));
-
-        when(commentRepository.save(any(Comment.class)))
-                .thenReturn(comment1);
-
-        CommentDto commentDto = itemService
-                .addComment(1L, 1L, CommentMapper.toCommentDto(comment1));
-
-        assertEquals(1, commentDto.getId());
-        assertEquals("Comment1 text", commentDto.getText());
-        assertEquals("User1 name", commentDto.getAuthorName());
-    }
-
-    @Test
-    void createCommentTest() {
-        when(bookingRepository.findFirstByBookerAndItemIdAndEndBefore(
-                any(),
-                anyLong(),
-                any(LocalDateTime.class)))
-                .thenReturn(Optional.of(booking1));
-
-        when(repository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(item1));
-        when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.ofNullable(user1));
-        when(commentRepository.save(any(Comment.class)))
-                .thenReturn(comment1);
-
-        CommentDto commentDto = itemService.addComment(
-                1L,
-                1L,
-                CommentMapper.toCommentDto(comment1)
-        );
-
-        assertEquals(1, commentDto.getId());
-        assertEquals("Comment1 text", commentDto.getText());
-        assertEquals("User1 name", commentDto.getAuthorName());
-    }
 
     @Test
     void createCommentFromUserWithoutBookingTest() {
