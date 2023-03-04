@@ -9,7 +9,6 @@ import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.item.Comment.Comment;
 import ru.practicum.shareit.item.Comment.CommentDto;
