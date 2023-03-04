@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Comment.Comment;
+import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Comment.CommentMapper;
 import ru.practicum.shareit.item.Comment.CommentRepository;
 import ru.practicum.shareit.item.Item;
@@ -276,6 +277,57 @@ class ItemServiceTest {
         assertNull(itemDtos.get(0).getRequestId());
     }
 
+    @Test
+    void addComment() {
+        when(bookingRepository.findByBookerIdAndItemIdAndEndBefore(
+                anyLong(),
+                anyLong(),
+                any(LocalDateTime.class)))
+                .thenReturn(Optional.ofNullable(booking1));
+
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(item1));
+
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user1));
+
+        when(commentRepository.save(any(Comment.class)))
+                .thenReturn(comment1);
+
+        CommentDto commentDto = itemService
+                .addComment(1L, 1L, CommentMapper.toCommentDto(comment1));
+
+        assertEquals(1, commentDto.getId());
+        assertEquals("Comment1 text", commentDto.getText());
+        assertEquals("User1 name", commentDto.getAuthorName());
+    }
+
+    @Test
+    void createCommentTest() {
+        when(bookingRepository.findByBookerIdAndItemIdAndEndBefore(
+                anyLong(),
+                anyLong(),
+                any(LocalDateTime.class)))
+                .thenReturn(Optional.of(booking1));
+
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(item1));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user1));
+        when(commentRepository.save(any(Comment.class)))
+                .thenReturn(comment1);
+
+        CommentDto commentDto = itemService.addComment(
+                1,
+                1,
+                CommentMapper.toCommentDto(comment1)
+        );
+
+        assertEquals(1, commentDto.getId());
+        assertEquals("Comment1 text", commentDto.getText());
+        assertEquals("User1 name", commentDto.getAuthorName());
+    }
+
 
     @Test
     void createCommentFromUserWithoutBookingTest() {
@@ -285,12 +337,16 @@ class ItemServiceTest {
                 any(LocalDateTime.class)))
                 .thenReturn(Optional.empty());
 
-        NullPointerException exception = assertThrows(NullPointerException.class,
+        NotFoundException exception = assertThrows(NotFoundException.class,
                 () -> itemService.addComment(
                         1L,
                         1L,
                         CommentMapper.toCommentDto(comment1)
                 ));
+
+        assertEquals(
+                "User not found",
+                exception.getMessage());
 
     }
 }

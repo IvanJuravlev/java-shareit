@@ -3,6 +3,8 @@ package ru.practicum.shareit.Item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.item.Comment.Comment;
 import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Comment.CommentMapper;
@@ -26,6 +29,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +37,7 @@ import java.util.List;
 
 
 import static org.mockito.Mockito.when;
+//import static ru.practicum.shareit.ShareItApp.HEADER;
 
 @AutoConfigureMockMvc
 @WebMvcTest(ItemController.class)
@@ -55,8 +60,11 @@ public class ItemControllerTest {
 
     private ItemDto itemDto;
 
+    private CommentDto comment1Dto;
+
     private ItemBookingDto itemBookingDto;
     private CommentDto commentDto;
+    private UserService userService;
 
     @BeforeEach
     void beforeEach() {
@@ -87,6 +95,17 @@ public class ItemControllerTest {
                 .created(now)
                 .build();
         commentDto = CommentMapper.toCommentDto(comment1);
+    }
+
+    @Test
+    void findItem() throws Exception {
+        when(itemService.getByItemId(anyLong(), anyLong()))
+                .thenReturn(itemBookingDto);
+
+        mockMvc.perform(get("/items/1")
+                        .header(HEADER, userDto1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(itemBookingDto)));
     }
 
     @Test
@@ -135,5 +154,18 @@ public class ItemControllerTest {
                 .header(HEADER, userDto1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(List.of(itemDto))));
+    }
+
+    @Test
+    void addComment() throws Exception {
+        when(itemService.addComment(anyLong(), anyLong(), any(CommentDto.class)))
+                .thenReturn(comment1Dto);
+
+        mockMvc.perform(post("/items/1/comment")
+                        .content(objectMapper.writeValueAsString(comment1Dto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER, userDto1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(comment1Dto)));
     }
 }

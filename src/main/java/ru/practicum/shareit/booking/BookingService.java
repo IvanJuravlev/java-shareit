@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -31,14 +32,19 @@ import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
+
+    private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingMapper bookingMapper;
 
     @Transactional
     public BookingDto create(long bookerId, ShortBookingDto shortBookingDto) {
-        User booker = UserMapper.toUser(userService.getById(bookerId));
+        User user = userRepository.findById(bookerId).orElseThrow(() -> {
+            throw new NotFoundException(String.format("Пользователя %x не существует", bookerId));
+        });
+      //  User booker = UserMapper.toUser(userService.getById(bookerId));
         Item item = itemRepository.findById(shortBookingDto.getItemId()).orElseThrow(() ->
-                new NotFoundException("Вещь не найдена"));
+                new NotFoundException(String.format("Предмет %x не найден", shortBookingDto.getItemId())));
 
         if (item.getOwner().getId() == bookerId) {
             throw new NotFoundException("Вещь не может быть заказана владельцем");
@@ -50,12 +56,13 @@ public class BookingService {
             throw new BadRequestException("Не корректное время заказа вещи");
         }
 
-        Booking booking = bookingMapper.shortBookingDtoToBooking(shortBookingDto, item, booker);
+        Booking booking = bookingMapper.shortBookingDtoToBooking(shortBookingDto, item, user);
         booking.setStatus(WAITING);
         bookingRepository.save(booking);
         log.info("Бронизование создано");
         return bookingMapper.toBookingDto(booking);
     }
+
 
     public BookingDto findById(Long userId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
@@ -73,8 +80,10 @@ public class BookingService {
 
 
     public List<BookingDto> findByBooker(Long userId, String state, int from, int size) {
+        userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException(String.format("Пользователя %x не существует", userId));
+        });
         BookingState bookingState = stateToEnum(state);
-        userService.getById(userId);
         int page = from / size;
         Pageable pageRequest = PageRequest.of(page, size);
         Pageable pageable = PageRequest.of(from, size);
@@ -112,8 +121,10 @@ public class BookingService {
      }
 
     public List<BookingDto> findItemBooking(Long userId, String stateParam, int from, int size) {
+        userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException(String.format("Пользователя %x не существует", userId));
+        });
         BookingState state = stateToEnum(stateParam);
-        userService.getById(userId);
         Pageable pageable = PageRequest.of(from, size);
         List<Booking> bookings;
 

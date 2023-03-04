@@ -28,6 +28,15 @@ public class BookingMapper {
                 booking.getStatus());
     }
 
+    public static Booking toBooking(BookingDto bookingDto, Item item, User user) {
+        return new Booking(bookingDto.getId(),
+                bookingDto.getStart(),
+                bookingDto.getEnd(),
+                item,
+                user,
+                bookingDto.getStatus());
+    }
+
     public static Booking shortBookingDtoToBooking(ShortBookingDto shortBookingDto, Item item, User user) {
         return new Booking(shortBookingDto.getId(),
                 shortBookingDto.getStart(),
@@ -35,7 +44,6 @@ public class BookingMapper {
                 item,
                 user,
                 null);
-
         }
 
     public static ShortBookingDto toShortBookingDto(Booking booking) {

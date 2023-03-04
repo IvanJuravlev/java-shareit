@@ -20,6 +20,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class ItemService {
     private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
+    private final UserRepository userRepository;
 
 
 
@@ -108,20 +110,33 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
+//    @Transactional
+//    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
+//        User author = UserMapper.toUser(userService.getById(userId));
+//        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+//                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
+//
+//        bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(() ->
+//               new BadRequestException("Предмет не был забронирован"));
+//        Comment comment = commentMapper.toComment(commentDto, author, item);
+//        comment.setCreated(LocalDateTime.now());
+//
+//        commentRepository.save(comment);
+//        log.warn("Добавлен комментарий {} ", comment);
+//        return commentMapper.toCommentDto(comment);
+//    }
+
+
     @Transactional
-    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
-        User author = UserMapper.toUser(userService.getById(userId));
-        Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
-
-        bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(() ->
-               new BadRequestException("Предмет не был забронирован"));
-        Comment comment = commentMapper.toComment(commentDto, author, item);
-        comment.setCreated(LocalDateTime.now());
-
+    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
+        bookingRepository.findByBookerIdAndItemIdAndEndBefore(userId, itemId, LocalDateTime.now())
+                .orElseThrow(() -> new BadRequestException("Вы не можете комментировать эту вещь"));
+        commentDto.setCreated(LocalDateTime.now());
+        Comment comment = CommentMapper.toComment(commentDto, user, item);
         commentRepository.save(comment);
-        log.warn("Добавлен комментарий {} ", comment);
-        return commentMapper.toCommentDto(comment);
+        return CommentMapper.toCommentDto(comment);
     }
 
     public void delete(long itemId) {

@@ -20,8 +20,8 @@ public class BookingController {
 
     @PostMapping
     public BookingDto create(@RequestHeader(HEADER) Long userId,
-                             @Valid @RequestBody ShortBookingDto shortBookingDto) {
-        return bookingService.create(userId, shortBookingDto);
+                             @Valid @RequestBody ShortBookingDto bookingDto) {
+        return bookingService.create(userId, bookingDto);
     }
 
     @GetMapping("/{bookingId}")

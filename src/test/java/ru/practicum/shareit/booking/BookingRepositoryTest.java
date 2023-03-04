@@ -166,7 +166,7 @@ class BookingRepositoryTest {
         em.persist(item);
         em.persist(booking);
 
-        Booking res = bookingRepository.findFirstByBookerAndItemIdAndEndBefore(user2, item.getId(),
+        Booking res = bookingRepository.findByBookerIdAndItemIdAndEndBefore(user2.getId(), item.getId(),
                 LocalDateTime.now().plusHours(1)).orElseThrow();
         assertEquals(booking, res);
     }
