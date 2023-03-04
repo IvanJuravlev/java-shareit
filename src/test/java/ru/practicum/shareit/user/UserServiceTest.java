@@ -62,7 +62,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUserWithNoUser() {
+    void updateUserWithNoUserTest() {
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         UserDto userDto = UserMapper.toUserDto(user1);
@@ -75,7 +75,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void getAllUsersWhenUserFoundThenReturnedUser() {
+    void getAllUsersWhenUserFoundThenReturnedUserTest() {
 
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user1));
@@ -126,7 +126,7 @@ public class UserServiceTest {
 
 
     @Test
-    void deleteUserTestWithNoUser() {
+    void deleteUserTestWithNoUserTest() {
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         UserDto userDto = UserMapper.toUserDto(user1);

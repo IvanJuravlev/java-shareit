@@ -90,7 +90,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void findAll() throws Exception {
+    void findAllTest() throws Exception {
         when(itemService.getAllByOwner(anyLong(), anyInt(), anyInt())).thenReturn(List.of(itemBookingDto));
 
         mockMvc.perform(get("/items")
@@ -102,7 +102,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void create() throws Exception {
+    void createTest() throws Exception {
         when(itemService.create(anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
         mockMvc.perform(post("/items")
@@ -114,7 +114,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void update() throws Exception {
+    void updateTest() throws Exception {
         when(itemService.update(anyLong(), anyLong(), any(ItemDto.class))).thenReturn(itemDto);
 
         mockMvc.perform(patch("/items/1")
@@ -126,7 +126,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void search() throws Exception {
+    void searchTest() throws Exception {
         when(itemService.search(anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(itemDto));
 

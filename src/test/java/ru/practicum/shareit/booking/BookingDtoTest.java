@@ -52,7 +52,7 @@ class BookingDtoTest {
     }
 
     @Test
-    void testSerialize() throws Exception {
+    void serializeTest() throws Exception {
         JsonContent<BookingDto> result = json.write(booking1Dto);
         Integer id = Math.toIntExact(booking1Dto.getId());
         Integer itemId = Math.toIntExact(booking1Dto.getItem().getId());

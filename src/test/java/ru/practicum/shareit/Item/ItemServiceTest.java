@@ -104,7 +104,7 @@ class ItemServiceTest {
 
 
     @Test
-    void getByItemId() {
+    void getByItemIdTest() {
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(item1));
 
@@ -120,7 +120,7 @@ class ItemServiceTest {
 
 
     @Test
-    void createInappropriateItemWithNoUser() {
+    void createInappropriateItemWithNoUserTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         assertThrows(NullPointerException.class, () ->
@@ -131,7 +131,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void  createInappropriateItemWithNoRequestId() {
+    void  createInappropriateItemWithNoRequestIdTest() {
         item1.setItemRequest(null);
 
         when(userRepository.findById(anyLong()))
@@ -145,7 +145,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void creatItemWithNullItemRequest() {
+    void creatItemWithNullItemRequestTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user1));
         when(repository.findById(anyLong()))
@@ -160,7 +160,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void update() {
+    void updateTest() {
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(item1));
         when(repository.save(any(Item.class)))
@@ -215,7 +215,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItemWithNameInUpperFirstLetter() {
+    void searchItemWithNameInUpperFirstLetterTest() {
 
         List<ItemDto> itemDtos = itemService.search("Item1", 0, 20);
 
@@ -232,7 +232,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItemWithNameInRandomUpperCase() {
+    void searchItemWithNameInRandomUpperCaseTest() {
         when(repository.search(anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(item1));
 
@@ -247,7 +247,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItemWithDescriptionInRandomUpperCase() {
+    void searchItemWithDescriptionInRandomUpperCaseTest() {
         when(repository.search(anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(item1));
 
@@ -262,7 +262,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItemWithDescriptionInUpperFirstLetter() {
+    void searchItemWithDescriptionInUpperFirstLetterTest() {
         when(repository.search(anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(item1));
 

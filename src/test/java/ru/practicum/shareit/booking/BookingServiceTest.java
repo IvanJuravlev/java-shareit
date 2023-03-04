@@ -148,7 +148,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void createBookingWithWrongUser() {
+    void createBookingWithWrongUserTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
@@ -165,7 +165,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void changeStatus() {
+    void changeStatusTest() {
         when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(booking1));
         when(userRepository.findById(anyLong()))
@@ -285,7 +285,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getBookingInfoBookingNotFound() {
+    void getBookingInfoBookingNotFoundTest() {
         when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         when(userRepository.findById(anyLong()))
@@ -302,7 +302,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getBookingInfoYouNotABooker() {
+    void getBookingInfoYouNotABookerTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user1));
 
@@ -375,7 +375,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void getItemsOwnerWithWrongUser() {
+    void getItemsOwnerWithWrongUserTest() {
 
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());

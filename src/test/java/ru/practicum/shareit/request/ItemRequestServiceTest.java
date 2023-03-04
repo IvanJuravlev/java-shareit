@@ -38,14 +38,14 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldCreateItemRequest() {
+    void shouldCreateItemRequestTest() {
         UserDto newUserDto = userService.create(userDto1);
         ItemRequestDto resultDTO = itemRequestService.create(newUserDto.getId(), postItemRequestDto);
         assertThat(resultDTO.getDescription(), equalTo(postItemRequestDto.getDescription()));
     }
 
     @Test
-    void shouldExceptionWhenCreateItemRequestWithWrongUser() {
+    void shouldExceptionWhenCreateItemRequestWithWrongUserTest() {
         NotFoundException exp = assertThrows(NotFoundException.class,
                 () -> itemRequestService.create(100500L, postItemRequestDto));
         assertFalse(exp.getMessage().isEmpty());
@@ -53,7 +53,7 @@ public class ItemRequestServiceTest {
 
 
     @Test
-    void shouldExceptionWhenGetItemRequestWithWrongId() {
+    void shouldExceptionWhenGetItemRequestWithWrongIdTest() {
         UserDto firstUserDto = userService.create(userDto1);
         NotFoundException exp = assertThrows(NotFoundException.class,
                 () -> itemRequestService.getById(firstUserDto.getId(), 100500L));
@@ -61,7 +61,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnAllItemRequests() {
+    void shouldReturnAllItemRequestsTest() {
         UserDto firstUserDto = userService.create(userDto1);
         UserDto newUserDto = userService.create(userDto2);
         itemRequestService.create(newUserDto.getId(), postItemRequestDto);
@@ -71,7 +71,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnOwnItemRequests() {
+    void shouldReturnOwnItemRequestsTest() {
         userService.create(userDto1);
         UserDto newUserDto = userService.create(userDto2);
         itemRequestService.create(newUserDto.getId(), postItemRequestDto);
@@ -82,7 +82,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnItemRequestById() {
+    void shouldReturnItemRequestByIdTest() {
         UserDto firstUserDto = userService.create(userDto1);
         ItemRequestDto newItemRequestDto = itemRequestService.create(firstUserDto.getId(), postItemRequestDto);
         ItemRequestDto returnItemRequestDto = itemRequestService.getById(newItemRequestDto.getId(),

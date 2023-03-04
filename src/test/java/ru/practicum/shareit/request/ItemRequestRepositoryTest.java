@@ -52,7 +52,7 @@ public class ItemRequestRepositoryTest {
     }
 
     @Test
-    void findByRequesterId() {
+    void findByRequesterIdTest() {
         List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(user1.getId());
         assertEquals(List.of(itemRequest1), itemRequestList);
     }

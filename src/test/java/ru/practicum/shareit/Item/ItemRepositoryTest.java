@@ -3,7 +3,7 @@ package ru.practicum.shareit.Item;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ItemRepositoryTest {
     @Autowired
@@ -75,7 +75,7 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void searchByTextTestFindDescription() {
+    void searchByTextTestFindDescriptionTest() {
 
         String text = "description";
         List<Item> items = itemRepository.search(text, PageRequest.of(0, 10));
@@ -86,7 +86,7 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void searchByTextTestFindName() {
+    void searchByTextTestFindNameTest() {
         String text = "name";
 
         List<Item> items = itemRepository.search(text, PageRequest.of(0, 10));
@@ -97,7 +97,7 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void searchByRequestsIdTest() {
+    void searchByRequestsIdTestTest() {
         List<Long> ids = itemRepository.findAll().stream()
                 .map(Item::getId)
                 .collect(Collectors.toList());

@@ -51,7 +51,7 @@ public class ItemRequestControllerTest {
 
 
     @Test
-    void create() throws Exception {
+    void createTest() throws Exception {
         when(itemRequestService.create(anyLong(), any())).thenReturn(itemRequestDto);
 
         mockMvc.perform(post("/requests")

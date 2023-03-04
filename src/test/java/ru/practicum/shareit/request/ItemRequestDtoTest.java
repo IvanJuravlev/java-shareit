@@ -51,7 +51,7 @@ class ItemRequestDtoTest {
     }
 
     @Test
-    void testSerialize() throws Exception {
+    void serializeTest() throws Exception {
         JsonContent<ItemRequestDto> response = json.write(itemRequest1Dto);
 
         Integer id = Math.toIntExact(itemRequest1Dto.getId());
