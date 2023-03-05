@@ -1,93 +1,242 @@
 package ru.practicum.shareit.request;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.PostItemRequestDto;
-import ru.practicum.shareit.user.UserDto;
-import ru.practicum.shareit.user.UserService;
-
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
+import static org.mockito.Mockito.verify;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-@SpringBootTest
-@Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@ExtendWith(MockitoExtension.class)
 public class ItemRequestServiceTest {
 
-    private final  ItemRequestService itemRequestService;
-    private final  UserService userService;
-    private UserDto userDto1;
-    private UserDto userDto2;
-    PostItemRequestDto postItemRequestDto;
+    public static final long FAKE_ID = 99999L;
+    @Mock
+    private ItemRequestRepository requestRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private ItemRepository itemRepository;
+
+    @InjectMocks
+    private ItemRequestService service;
+    @Spy
+    private ItemRequestMapper mapper;
+    @Spy
+    private ItemMapper itemMapper;
+    private User user;
+    private Item item;
+    private ItemRequest request;
+    private PostItemRequestDto postItemRequestDto;
 
     @BeforeEach
     void beforeEach() {
-        postItemRequestDto = new PostItemRequestDto();
-        postItemRequestDto.setDescription("req description");
-        userDto1 = new UserDto(101L, "user1", "user1@mail.ru");
-        userDto2 = new UserDto(102L, "user2", "user2@mail.ru");
+        user = User.builder()
+                .id(1L)
+                .name("Test User")
+                .email("test@yandex.ru")
+                .build();
+
+        item = Item.builder()
+                .id(1L)
+                .name("Test Item")
+                .description("Test Description")
+                .available(true)
+                .itemRequest(request)
+                .build();
+
+        request = ItemRequest.builder()
+                .id(1L)
+                .description("Test Description")
+                .created(LocalDateTime.now())
+                .requester(user)
+                .build();
+
+        postItemRequestDto = PostItemRequestDto.builder()
+                .description("Test Description")
+                .build();
     }
 
     @Test
-    void shouldCreateItemRequestTest() {
-        UserDto newUserDto = userService.create(userDto1);
-        ItemRequestDto resultDTO = itemRequestService.create(newUserDto.getId(), postItemRequestDto);
-        assertThat(resultDTO.getDescription(), equalTo(postItemRequestDto.getDescription()));
+    void shouldAddRequest() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.save(any(ItemRequest.class)))
+                .thenReturn(request);
+
+        ItemRequestDto requestDTO = service.create(user.getId(), postItemRequestDto);
+
+        assertEquals(requestDTO.getId(), request.getId());
     }
 
     @Test
-    void shouldExceptionWhenCreateItemRequestWithWrongUserTest() {
-        NotFoundException exp = assertThrows(NotFoundException.class,
-                () -> itemRequestService.create(100500L, postItemRequestDto));
-        assertFalse(exp.getMessage().isEmpty());
-    }
+    void shouldAddRequestAndCheckRepositoryMethodCalls() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.save(any(ItemRequest.class)))
+                .thenReturn(request);
 
+        service.create(user.getId(), postItemRequestDto);
 
-    @Test
-    void shouldExceptionWhenGetItemRequestWithWrongIdTest() {
-        UserDto firstUserDto = userService.create(userDto1);
-        NotFoundException exp = assertThrows(NotFoundException.class,
-                () -> itemRequestService.getById(firstUserDto.getId(), 100500L));
-        assertFalse(exp.getMessage().isEmpty());
-    }
-
-    @Test
-    void shouldReturnAllItemRequestsTest() {
-        UserDto firstUserDto = userService.create(userDto1);
-        UserDto newUserDto = userService.create(userDto2);
-        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
-        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
-        List<ItemRequestDto> listItemRequest = itemRequestService.getOtherRequests(firstUserDto.getId(), 0, 10);
-        assertThat(listItemRequest.size(), equalTo(2));
+        verify(userRepository, times(1))
+                .findById(user.getId());
+        verify(requestRepository, times(1))
+                .save(any(ItemRequest.class));
     }
 
     @Test
-    void shouldReturnOwnItemRequestsTest() {
-        userService.create(userDto1);
-        UserDto newUserDto = userService.create(userDto2);
-        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
-        itemRequestService.create(newUserDto.getId(), postItemRequestDto);
-        List<ItemRequestDto> listItemRequest = itemRequestService.getOnwRequests(newUserDto.getId());
-        System.out.println(listItemRequest.toString());
-        assertThat(listItemRequest.size(), equalTo(2));
+    void shouldAddRequestWithIncorrectUserId() {
+        when(userRepository.findById(FAKE_ID))
+                .thenThrow(new NotFoundException("User not found"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> service.create(FAKE_ID, postItemRequestDto));
+
+        assertEquals("User not found", exception.getMessage());
     }
 
     @Test
-    void shouldReturnItemRequestByIdTest() {
-        UserDto firstUserDto = userService.create(userDto1);
-        ItemRequestDto newItemRequestDto = itemRequestService.create(firstUserDto.getId(), postItemRequestDto);
-        ItemRequestDto returnItemRequestDto = itemRequestService.getById(newItemRequestDto.getId(),
-                firstUserDto.getId());
-        assertThat(returnItemRequestDto.getDescription(), equalTo(postItemRequestDto.getDescription()));
+    void shouldReturnRequestListByOwnerId() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findAllByRequesterIdOrderByCreatedDesc(user.getId()))
+                .thenReturn(List.of(request));
+
+        List<ItemRequestDto> requestDTOS = service.getOnwRequests(user.getId());
+
+        assertEquals(requestDTOS.get(0).getId(), request.getId());
+    }
+
+    @Test
+    void shouldReturnRequestListAndCheckRepositoryMethodCalls() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findAllByRequesterIdOrderByCreatedDesc(user.getId()))
+                .thenReturn(List.of(request));
+
+        service.getOnwRequests(user.getId());
+
+        verify(userRepository, times(1))
+                .findById(user.getId());
+        verify(requestRepository, times(1))
+                .findAllByRequesterIdOrderByCreatedDesc(user.getId());
+    }
+
+    @Test
+    void shouldReturnRequestListByIncorrectUserId() {
+        when(userRepository.findById(FAKE_ID))
+                .thenThrow(new NotFoundException("User not found"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> service.getOnwRequests(FAKE_ID));
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnAllRequestList() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any()))
+                .thenReturn(List.of(request));
+
+        List<ItemRequestDto> requestDTOS = service.getOtherRequests(user.getId(), 0, 10);
+
+        assertEquals(requestDTOS.get(0).getId(), request.getId());
+    }
+
+    @Test
+    void shouldReturnAllRequestListAndCheckRepositoryMethodCalls() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any()))
+                .thenReturn(List.of(request));
+
+        service.getOtherRequests(user.getId(), 0, 10);
+
+        verify(userRepository, times(1))
+                .findById(user.getId());
+        verify(requestRepository, times(1))
+                .findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any());
+    }
+
+    @Test
+    void shouldReturnAllRequestListByIncorrectUserId() {
+        when(userRepository.findById(FAKE_ID))
+                .thenThrow(new NotFoundException("User not found"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> service.getOtherRequests(FAKE_ID, 0,10));
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnRequestById() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findById(request.getId()))
+                .thenReturn(Optional.of(request));
+
+        ItemRequestDto requestDTO = service.getById(user.getId(), request.getId());
+
+        assertEquals(requestDTO.getId(), request.getId());
+    }
+
+    @Test
+    void shouldReturnRequestByIdAndCheckRepositoryMethodCalls() {
+        when(userRepository.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findById(request.getId()))
+                .thenReturn(Optional.of(request));
+
+        service.getById(user.getId(), request.getId());
+
+        verify(userRepository, times(1))
+                .findById(user.getId());
+        verify(requestRepository, times(1))
+                .findById(request.getId());
+    }
+
+    @Test
+    void shouldReturnRequestByIncorrectUserId() {
+        when(userRepository.findById(anyLong())).thenThrow(new NotFoundException("User not found"));
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.getById(FAKE_ID, request.getId()));
+        assertEquals("User not found", exception.getMessage());
+
+    }
+
+    @Test
+    void shouldReturnRequestByIncorrectRequestId() {
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.of(user));
+        when(requestRepository.findById(anyLong()))
+                .thenThrow(new NotFoundException("Request not found"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> service.getById(user.getId(), FAKE_ID));
+
+        assertEquals("Request not found", exception.getMessage());
     }
 
 }

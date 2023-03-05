@@ -347,6 +347,5 @@ class ItemServiceTest {
         assertEquals(
                 "User not found",
                 exception.getMessage());
-
     }
 }

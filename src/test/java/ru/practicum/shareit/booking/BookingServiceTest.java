@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -15,29 +14,22 @@ import org.mockito.quality.Strictness;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.NotSupportedStateException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.*;
 
 @ExtendWith(MockitoExtension.class)
-//@SpringBootTest
 @MockitoSettings(strictness = Strictness.LENIENT)
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class BookingServiceTest {
 
     @Mock

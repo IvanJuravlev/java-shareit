@@ -12,8 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.PostItemRequestDto;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,21 +26,21 @@ import java.util.stream.Collectors;
 public class ItemRequestService {
     private final ItemRepository itemRepository;
     private final ItemRequestRepository itemRequestRepository;
-
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     public ItemRequestDto create(Long userId, PostItemRequestDto postItemRequestDto) {
-        log.info("Первая ошибка");
-        User requester = UserMapper.toUser(userService.getById(userId));
-        log.info("Первая ошибка");
+       // User requester = UserMapper.toUser(userService.getById(userId));
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь c id %x не найден", userId)));
         ItemRequest itemRequest = itemRequestRepository.save(ItemRequestMapper
-                .mapToItemRequest(requester, postItemRequestDto, LocalDateTime.now()));
+                .mapToItemRequest(user, postItemRequestDto, LocalDateTime.now()));
         log.info("Запрос создан с id {}", itemRequest.getId());
         return ItemRequestMapper.toItemRequestDto(itemRequest);
     }
 
     public ItemRequestDto getById(long requestId, long userId) {
-        userService.getById(userId);
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь c id %x не найден", userId)));
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() ->
                 new NotFoundException(String.format("Запрос с id %x не существует", requestId)));
         List<ItemDto> items = itemRepository.findByItemRequestId(requestId).stream()
@@ -53,7 +52,8 @@ public class ItemRequestService {
     }
 
     public List<ItemRequestDto> getOtherRequests(long userId, int from, int size) {
-        userService.getById(userId);
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь c id %x не найден", userId)));
         Pageable pageable = PageRequest.of(from, size);
         List<ItemRequestDto> responseList = itemRequestRepository
                 .findAllByRequesterIdIsNotOrderByCreatedDesc(userId, pageable).stream()
@@ -63,7 +63,8 @@ public class ItemRequestService {
     }
 
     public List<ItemRequestDto> getOnwRequests(long userId) {
-        userService.getById(userId);
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь c id %x не найден", userId)));
         List<ItemRequestDto> responseList = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId).stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
