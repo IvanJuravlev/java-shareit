@@ -348,4 +348,113 @@ class ItemServiceTest {
                 "User not found",
                 exception.getMessage());
     }
+
+    @Test
+    void shouldUpdateItemWithIncorrectUserId() {
+        User anotherUser = User.builder()
+                .id(55L)
+                .build();
+
+        ItemDto itemForUpdate = ItemDto.builder()
+                .name("New Name")
+                .build();
+
+        item1.setOwner(user1);
+
+        when(userRepository.findById(anotherUser.getId()))
+                .thenReturn(Optional.of(anotherUser));
+        when(repository.findById(item1.getId()))
+                .thenReturn(Optional.of(item1));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> itemService.update(55L, item1.getId(), itemForUpdate));
+
+        assertEquals("Вещь для обновления не найдена", exception.getMessage());
+    }
+
+    @Test
+    void shouldUpdateItemAvailableStatus() {
+        item1.setOwner(user1);
+
+        ItemDto itemForUpdate = ItemDto.builder()
+                .available(false)
+                .build();
+
+        when(userRepository.findById(user1.getId()))
+                .thenReturn(Optional.of(user1));
+        when(repository.findById(item1.getId()))
+                .thenReturn(Optional.of(item1));
+        when(repository.save(any(Item.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        ItemDto updatedItem = itemService.update(user1.getId(), item1.getId(), itemForUpdate);
+
+        assertEquals(item1.getId(), updatedItem.getId());
+        assertFalse(updatedItem.getAvailable());
+    }
+
+//    @Test
+//    void shouldUpdateItemWithIncorrectUserId() {
+//        User anotherUser = User.builder()
+//                .id(55L)
+//                .build();
+//
+//        ItemDto itemForUpdate = ItemDto.builder()
+//                .name("New Name")
+//                .build();
+//
+//        item1.setOwner(user1);
+//
+//        when(userRepository.findById(anotherUser.getId()))
+//                .thenReturn(Optional.of(anotherUser));
+//        when(repository.findById(item1.getId()))
+//                .thenReturn(Optional.of(item1));
+//
+//        final NotFoundException exception = assertThrows(NotFoundException.class,
+//                () -> itemService.update(55L, item1.getId(), itemForUpdate));
+//
+//        assertEquals("Item does not belong to the user", exception.getMessage());
+//    }
+
+    @Test
+    void shouldUpdateItemDescription() {
+        item1.setOwner(user1);
+
+        ItemDto itemForUpdate = ItemDto.builder()
+                .description("New Description")
+                .build();
+
+        when(userRepository.findById(user1.getId()))
+                .thenReturn(Optional.of(user1));
+        when(repository.findById(item1.getId()))
+                .thenReturn(Optional.of(item1));
+        when(repository.save(any(Item.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        ItemDto updatedItem = itemService.update(user1.getId(), item1.getId(), itemForUpdate);
+
+        assertEquals(item1.getId(), updatedItem.getId());
+        assertEquals("New Description", updatedItem.getDescription());
+    }
+
+    @Test
+    void shouldUpdateItemName() {
+        item1.setOwner(user1);
+
+        ItemDto itemForUpdate = ItemDto.builder()
+                .name("New Name")
+                .build();
+
+        when(userRepository.findById(user1.getId()))
+                .thenReturn(Optional.of(user1));
+        when(repository.findById(item1.getId()))
+                .thenReturn(Optional.of(item1));
+        when(repository.save(any(Item.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        ItemDto updatedItem = itemService.update(user1.getId(), item1.getId(), itemForUpdate);
+
+        assertEquals(item1.getId(), updatedItem.getId());
+        assertEquals("New Name", updatedItem.getName());
+    }
 }

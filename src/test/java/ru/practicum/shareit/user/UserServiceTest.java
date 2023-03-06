@@ -94,10 +94,21 @@ public class UserServiceTest {
     @Test
     void getAllUsersWhenUserFoundThenUserNotFoundExceptionThrown() {
         long userId = 0L;
-        //    User expectedUser = new User();
         when(repository.findById(userId))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> service.getById(userId));
+    }
+
+    @Test
+    void deleteUserTest() {
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user1));
+
+        UserDto userDto = service.delete(user1.getId());
+
+        assertEquals(1, userDto.getId());
+        assertEquals("User1 name", userDto.getName());
+        assertEquals("user1@mail.com", userDto.getEmail());
     }
 
     @Test

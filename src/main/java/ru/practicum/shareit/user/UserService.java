@@ -55,10 +55,11 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(long id) {
+    public UserDto delete(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
         userRepository.deleteById(id);
+        return UserMapper.toUserDto(user);
     }
 
     private void checkIfEmailExists(String email) {
