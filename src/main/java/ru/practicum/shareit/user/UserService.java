@@ -32,7 +32,6 @@ public class UserService {
 
 
     public UserDto create(UserDto userDto) {
-        checkIfEmailExists(userDto.getEmail());
         User user = userRepository.save(UserMapper.toUser(userDto));
         log.info("Пользователь с id {} создан", user.getId());
         return UserMapper.toUserDto(user);
