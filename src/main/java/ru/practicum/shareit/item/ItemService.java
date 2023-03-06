@@ -110,22 +110,6 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
-//        User author = UserMapper.toUser(userService.getById(userId));
-//        Item item = itemRepository.findById(itemId).orElseThrow(() ->
-//                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
-//
-//        bookingRepository.findFirstByBookerAndItemIdAndEndBefore(author, itemId, LocalDateTime.now()).orElseThrow(() ->
-//               new BadRequestException("Предмет не был забронирован"));
-//        Comment comment = commentMapper.toComment(commentDto, author, item);
-//        comment.setCreated(LocalDateTime.now());
-//
-//        commentRepository.save(comment);
-//        log.warn("Добавлен комментарий {} ", comment);
-//        return commentMapper.toCommentDto(comment);
-//    }
-
 
     @Transactional
     public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {

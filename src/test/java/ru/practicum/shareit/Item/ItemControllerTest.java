@@ -52,7 +52,7 @@ public class ItemControllerTest {
 
     private ItemBookingDto itemBookingDto;
     private CommentDto commentDto;
-   // private UserService userService;
+
 
     @BeforeEach
     void beforeEach() {
