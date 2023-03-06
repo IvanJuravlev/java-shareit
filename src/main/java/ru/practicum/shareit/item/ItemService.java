@@ -19,7 +19,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 
@@ -46,14 +45,16 @@ public class ItemService {
 
     @Transactional
     public ItemDto create(long userId, ItemDto itemDto) {
-        User owner = UserMapper.toUser(userService.getById(userId));
+        User owner = userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException(String.format("Пользователя id %x не существует", userId));
+        });
         ItemRequest itemRequest = null;
         Long itemRequestId = itemDto.getRequestId();
         if (itemRequestId != null) {
             itemRequest = itemRequestRepository.findById(itemRequestId).orElseThrow(() ->
                     new NotFoundException(String.format("Запроса с id %x не существует", itemRequestId)));
         }
-        Item item = itemRepository.save(itemMapper.toItem(itemDto, owner, itemRequest));
+        Item item = itemRepository.save(ItemMapper.toItem(itemDto, owner, itemRequest));
         itemDto.setId(item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -123,11 +124,11 @@ public class ItemService {
         return CommentMapper.toCommentDto(comment);
     }
 
-    public void delete(long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException(String.format("Предмет id %x не найден", itemId)));
-
-        itemRepository.delete(item);
+    public void delete(long itemId, long userId) {
+        userRepository.findById(userId).orElseThrow(() -> {
+            throw new NotFoundException(String.format("Пользователя id %x не существует", userId));
+        });
+        itemRepository.deleteById(itemId);
         log.info("Предмет с id {} удален", itemId);
     }
 

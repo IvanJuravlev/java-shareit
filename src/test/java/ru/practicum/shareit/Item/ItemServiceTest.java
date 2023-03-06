@@ -1,6 +1,5 @@
 package ru.practicum.shareit.Item;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.springframework.data.domain.PageRequest;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +16,7 @@ import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Comment.CommentMapper;
 import ru.practicum.shareit.item.Comment.CommentRepository;
 import ru.practicum.shareit.item.Item;
+import static org.mockito.Mockito.times;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
@@ -25,6 +25,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import org.junit.jupiter.api.BeforeEach;
 import static org.mockito.Mockito.when;
 import org.mockito.quality.Strictness;
+import static org.mockito.Mockito.verify;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import org.mockito.InjectMocks;
@@ -119,16 +120,70 @@ class ItemServiceTest {
         assertEquals(true, itemBookingDto.isAvailable());
     }
 
+    @Test
+    void create() {
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user1));
+        when(repository.save(any(Item.class)))
+                .thenReturn(item1);
+
+        ItemDto itemDto = itemService.create(item1.getId(), ItemMapper.toItemDto(item1));
+
+        assertEquals(1, itemDto.getId());
+        assertEquals("Item1 name", itemDto.getName());
+        assertEquals("Item1 description", itemDto.getDescription());
+        assertEquals(true, itemDto.getAvailable());
+        assertNull(itemDto.getRequestId());
+    }
+
 
     @Test
     void createInappropriateItemWithNoUserTest() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
-        assertThrows(NullPointerException.class, () ->
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
                 itemService.create(
                         user1.getId(),
                         ItemMapper.toItemDto(item1)
                 ));
+
+        assertEquals("Пользователя id 1 не существует", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnItemsByUserIdWithoutBookings() {
+        when(repository.getAllByOwnerIdOrderByIdAsc(anyLong(), any(PageRequest.class)))
+                .thenReturn(List.of(item1));
+
+        List<ItemBookingDto> items = itemService.getAllByOwner(user1.getId(), 0, 10);
+
+        assertEquals(items.get(0).getId(), item1.getId());
+        assertEquals(items.get(0).getName(), item1.getName());
+        assertNull(items.get(0).getLastBooking());
+        assertNull(items.get(0).getNextBooking());
+    }
+
+    @Test
+    void shouldRemoveItemByIdWithIncorrectUserId() {
+        when(userRepository.findById(55L))
+                .thenThrow(new NotFoundException("User not found"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> itemService.delete(55L, item1.getId()));
+
+        assertEquals("Пользователя id 1 не существует", exception.getMessage());
+    }
+
+    @Test
+    void shouldRemoveItemById() {
+        when(userRepository.findById(user1.getId()))
+                .thenReturn(Optional.of(user1));
+
+        itemService.delete(item1.getId(), user1.getId());
+
+        verify(userRepository, times(1)).findById(user1.getId());
+        verify(repository, times(1)).deleteById(item1.getId());
     }
 
     @Test
@@ -138,11 +193,13 @@ class ItemServiceTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NullPointerException.class, () ->
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
                 itemService.create(
                         user1.getId(),
                         ItemMapper.toItemDto(item1)
                 ));
+
+        assertEquals("Пользователя id 1 не существует", exception.getMessage());
     }
 
     @Test
@@ -393,28 +450,6 @@ class ItemServiceTest {
         assertFalse(updatedItem.getAvailable());
     }
 
-//    @Test
-//    void shouldUpdateItemWithIncorrectUserId() {
-//        User anotherUser = User.builder()
-//                .id(55L)
-//                .build();
-//
-//        ItemDto itemForUpdate = ItemDto.builder()
-//                .name("New Name")
-//                .build();
-//
-//        item1.setOwner(user1);
-//
-//        when(userRepository.findById(anotherUser.getId()))
-//                .thenReturn(Optional.of(anotherUser));
-//        when(repository.findById(item1.getId()))
-//                .thenReturn(Optional.of(item1));
-//
-//        final NotFoundException exception = assertThrows(NotFoundException.class,
-//                () -> itemService.update(55L, item1.getId(), itemForUpdate));
-//
-//        assertEquals("Item does not belong to the user", exception.getMessage());
-//    }
 
     @Test
     void shouldUpdateItemDescription() {

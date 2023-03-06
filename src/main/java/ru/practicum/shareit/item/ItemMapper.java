@@ -11,7 +11,7 @@ import java.util.ArrayList;
 @Component
 public class ItemMapper {
 
-    public Item toItem(ItemDto itemDto, User user,ItemRequest itemRequest) {
+    public static Item toItem(ItemDto itemDto, User user,ItemRequest itemRequest) {
         return new Item(itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),

@@ -50,8 +50,9 @@ public class ItemController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable long id) {
-        itemService.delete(id);
+    public void delete(@RequestHeader(HEADER) long userId,
+                       @PathVariable long itemId) {
+        itemService.delete(itemId, userId);
     }
 
     @PostMapping("/{itemId}/comment")
