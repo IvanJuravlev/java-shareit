@@ -41,7 +41,6 @@ public class BookingService {
         User user = userRepository.findById(bookerId).orElseThrow(() -> {
             throw new NotFoundException(String.format("Пользователя %x не существует", bookerId));
         });
-      //  User booker = UserMapper.toUser(userService.getById(bookerId));
         Item item = itemRepository.findById(shortBookingDto.getItemId()).orElseThrow(() ->
                 new NotFoundException(String.format("Предмет %x не найден", shortBookingDto.getItemId())));
 
@@ -109,7 +108,6 @@ public class BookingService {
                 break;
             default:
                 throw new NotSupportedStateException("Unknown state: " + state);
-
         }
 
         userBookings.sort(Comparator.comparing(Booking::getStart).reversed());
@@ -176,8 +174,6 @@ public class BookingService {
 
             return BookingMapper.toBookingDto(booking);
      }
-
-
 
 
     public BookingState stateToEnum(String state) {

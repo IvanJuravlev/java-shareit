@@ -29,7 +29,6 @@ public class ItemRequestService {
     private final UserRepository userRepository;
 
     public ItemRequestDto create(Long userId, PostItemRequestDto postItemRequestDto) {
-       // User requester = UserMapper.toUser(userService.getById(userId));
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь c id %x не найден", userId)));
         ItemRequest itemRequest = itemRequestRepository.save(ItemRequestMapper

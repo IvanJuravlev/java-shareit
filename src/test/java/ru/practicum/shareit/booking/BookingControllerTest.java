@@ -88,7 +88,6 @@ class BookingControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
     }
 
-
     @Test
     void findItemBookingTest() throws Exception {
         when(bookingService.findItemBooking(anyLong(), any(String.class), anyInt(), anyInt()))
