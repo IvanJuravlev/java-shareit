@@ -77,7 +77,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldAddRequest() {
+    void addRequest() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.save(any(ItemRequest.class)))
@@ -89,7 +89,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldAddRequestAndCheckRepositoryMethodCalls() {
+    void addRequestAndCheckRepositoryMethodCalls() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.save(any(ItemRequest.class)))
@@ -104,7 +104,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldAddRequestWithIncorrectUserId() {
+    void addRequestWithIncorrectUserId() {
         when(userRepository.findById(FAKE_ID))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -115,7 +115,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestListByOwnerId() {
+    void getRequestListByOwnerId() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findAllByRequesterIdOrderByCreatedDesc(user.getId()))
@@ -127,7 +127,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestListAndCheckRepositoryMethodCalls() {
+    void getRequestListAndCheckRepositoryMethodCalls() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findAllByRequesterIdOrderByCreatedDesc(user.getId()))
@@ -142,7 +142,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestListByIncorrectUserId() {
+    void getRequestListByIncorrectUserId() {
         when(userRepository.findById(FAKE_ID))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -153,7 +153,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnAllRequestList() {
+    void getAllRequestList() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any()))
@@ -165,7 +165,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnAllRequestListAndCheckRepositoryMethodCalls() {
+    void getAllRequestListAndCheckRepositoryMethodCalls() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findAllByRequesterIdIsNotOrderByCreatedDesc(anyLong(), any()))
@@ -180,7 +180,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnAllRequestListByIncorrectUserId() {
+    void getAllRequestListByIncorrectUserId() {
         when(userRepository.findById(FAKE_ID))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -191,7 +191,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestById() {
+    void getRequestById() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findById(request.getId()))
@@ -203,7 +203,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestByIdAndCheckRepositoryMethodCalls() {
+    void getRequestByIdAndCheckRepositoryMethodCalls() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findById(request.getId()))
@@ -218,7 +218,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestByIncorrectUserId() {
+    void getRequestByIncorrectUserId() {
         when(userRepository.findById(anyLong())).thenThrow(new NotFoundException("User not found"));
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> service.getById(FAKE_ID, request.getId()));
@@ -227,7 +227,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void shouldReturnRequestByIncorrectRequestId() {
+    void getRequestByIncorrectRequestId() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findById(anyLong()))

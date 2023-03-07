@@ -389,7 +389,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateAll() {
+    void getAllByBookerIdWithStateAll() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -403,7 +403,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateCurrent() {
+    void getAllByBookerIdWithStateCurrent() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -417,7 +417,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStatePast() {
+    void getAllByBookerIdWithStatePast() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -432,7 +432,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateFuture() {
+    void getAllByBookerIdWithStateFuture() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -446,7 +446,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateWaiting() {
+    void getReturnAllByBookerIdWithStateWaiting() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
         Pageable pageRequest = PageRequest.of(0, 10);
@@ -461,7 +461,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateReject() {
+    void getAllByBookerIdWithStateReject() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
         Pageable pageRequest = PageRequest.of(0, 10);
@@ -476,7 +476,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByBookerIdWithStateIncorrect() {
+    void getAllByBookerIdWithStateIncorrect() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
         Pageable pageRequest = PageRequest.of(0, 10);
@@ -488,7 +488,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateAll() {
+    void getAllByOwnerIdWithStateAll() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -502,7 +502,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateCurrent() {
+    void getAllByOwnerIdWithStateCurrent() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -516,7 +516,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStatePast() {
+    void getAllByOwnerIdWithStatePast() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -530,7 +530,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateFuture() {
+    void getAllByOwnerIdWithStateFuture() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -544,7 +544,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateWaiting() {
+    void getAllByOwnerIdWithStateWaiting() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -560,7 +560,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateReject() {
+    void getAllByOwnerIdWithStateReject() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -576,7 +576,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldReturnAllByOwnerIdWithStateIncorrect() {
+    void getAllByOwnerIdWithStateIncorrect() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 

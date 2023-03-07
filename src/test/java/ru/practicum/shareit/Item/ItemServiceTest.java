@@ -152,7 +152,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldReturnItemsByUserIdWithoutBookings() {
+    void getItemsByUserIdWithoutBookings() {
         when(repository.getAllByOwnerIdOrderByIdAsc(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(item1));
 
@@ -165,7 +165,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldRemoveItemByIdWithIncorrectUserId() {
+    void getItemByIdWithIncorrectUserId() {
         when(userRepository.findById(55L))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -176,7 +176,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldRemoveItemById() {
+    void removeItemById() {
         when(userRepository.findById(user1.getId()))
                 .thenReturn(Optional.of(user1));
 
@@ -407,7 +407,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldUpdateItemWithIncorrectUserId() {
+    void updateItemWithIncorrectUserId() {
         User anotherUser = User.builder()
                 .id(55L)
                 .build();
@@ -430,7 +430,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldUpdateItemAvailableStatus() {
+    void updateItemAvailableStatus() {
         item1.setOwner(user1);
 
         ItemDto itemForUpdate = ItemDto.builder()
@@ -452,7 +452,7 @@ class ItemServiceTest {
 
 
     @Test
-    void shouldUpdateItemDescription() {
+    void updateItemDescription() {
         item1.setOwner(user1);
 
         ItemDto itemForUpdate = ItemDto.builder()
@@ -473,7 +473,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void shouldUpdateItemName() {
+    void updateItemName() {
         item1.setOwner(user1);
 
         ItemDto itemForUpdate = ItemDto.builder()

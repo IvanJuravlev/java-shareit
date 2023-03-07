@@ -16,7 +16,7 @@ public class UserServiceIntegrationTest {
     private final UserService userService;
 
     @Test
-    void shouldReturnAllUsers() {
+    void getAllUsers() {
         UserDto firstUserDTO = UserDto.builder()
                 .name("First User")
                 .email("firstuser@yandex.ru")
