@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
@@ -25,13 +26,15 @@ public class ItemController {
     }
 
     @PatchMapping(itemPath)
-    public ItemDto update(@RequestHeader(HEADER) long userId, @PathVariable long itemId, @RequestBody ItemUpdateDto item) {
-        return itemService.update(userId, itemId, item);
+    public ItemDto update(@RequestHeader(HEADER) long userId, @PathVariable long itemId, @RequestBody ItemDto itemDto) {
+        return itemService.update(userId, itemId, itemDto);
     }
 
     @GetMapping
-    public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId) {
-        return itemService.getAllByOwner(ownerId);
+    public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId,
+                                              @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                              @Positive @RequestParam(defaultValue = "10") int size) {
+        return itemService.getAllByOwner(ownerId, from, size);
     }
 
     @GetMapping(itemPath)
@@ -40,18 +43,22 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam String text) {
-        return itemService.search(text);
+    public List<ItemDto> searchItem(@RequestParam String text,
+                                 @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                 @Positive @RequestParam(defaultValue = "10") int size) {
+        return itemService.search(text, from, size);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable long id) {
-        itemService.delete(id);
+    public void delete(@RequestHeader(HEADER) long userId,
+                       @PathVariable long itemId) {
+        itemService.delete(itemId, userId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(HEADER) Long userId, @PathVariable Long itemId,
-                                    @Valid @RequestBody CommentDto commentDto) {
+    public CommentDto addComment(@RequestHeader(HEADER) long userId,
+                                 @PathVariable long itemId,
+                                 @Valid @RequestBody CommentDto commentDto) {
         return itemService.addComment(userId, itemId, commentDto);
     }
 

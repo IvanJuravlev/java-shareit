@@ -8,6 +8,7 @@ import ru.practicum.shareit.exception.DuplicatedEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -16,8 +17,10 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDto> getAll() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
 
@@ -52,10 +55,11 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(long id) {
+    public UserDto delete(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
         userRepository.deleteById(id);
+        return UserMapper.toUserDto(user);
     }
 
     private void checkIfEmailExists(String email) {

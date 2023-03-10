@@ -12,13 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handlerChangeException(final ChangeException exception) {
-        log.warn("404 {}", exception.getMessage());
-        return exception.getMessage();
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public String handlerDuplicateEmailException(final DuplicatedEmailException exception) {
         log.warn("409 {}", exception.getMessage());

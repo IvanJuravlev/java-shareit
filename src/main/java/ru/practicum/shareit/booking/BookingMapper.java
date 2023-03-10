@@ -28,12 +28,28 @@ public class BookingMapper {
                 booking.getStatus());
     }
 
-    public Booking shortBookingDtoToBooking(ShortBookingDto shortBookingDto, Item item, User user) {
+    public static Booking toBooking(BookingDto bookingDto, Item item, User user) {
+        return new Booking(bookingDto.getId(),
+                bookingDto.getStart(),
+                bookingDto.getEnd(),
+                item,
+                user,
+                bookingDto.getStatus());
+    }
+
+    public static Booking shortBookingDtoToBooking(ShortBookingDto shortBookingDto, Item item, User user) {
         return new Booking(shortBookingDto.getId(),
                 shortBookingDto.getStart(),
                 shortBookingDto.getEnd(),
                 item,
                 user,
                 null);
+        }
+
+    public static ShortBookingDto toShortBookingDto(Booking booking) {
+        return new ShortBookingDto(booking.getId(),
+                booking.getItem().getId(),
+                booking.getStart(),
+                booking.getEnd());
     }
 }

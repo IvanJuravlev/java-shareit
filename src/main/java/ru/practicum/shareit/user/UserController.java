@@ -15,7 +15,7 @@ public class UserController {
     private final String idPath = "/{id}";
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAll();
     }
 
@@ -35,9 +35,8 @@ public class UserController {
     }
 
     @DeleteMapping(idPath)
-    public void deleteUser(@PathVariable long id) {
-        userService.delete(id);
+    public UserDto deleteUser(@PathVariable long id) {
+       return userService.delete(id);
     }
-
 
 }
