@@ -6,9 +6,6 @@ import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
@@ -21,7 +18,7 @@ public class ItemController {
     private final String itemPath = "/{itemId}";
 
     @PostMapping
-    public ItemDto create(@RequestHeader (HEADER) long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto create(@RequestHeader (HEADER) long userId, @RequestBody ItemDto itemDto) {
         return itemService.create(userId, itemDto);
     }
 
@@ -32,8 +29,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId,
-                                              @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                              @Positive @RequestParam(defaultValue = "10") int size) {
+                                              @RequestParam(defaultValue = "0") int from,
+                                              @RequestParam(defaultValue = "10") int size) {
         return itemService.getAllByOwner(ownerId, from, size);
     }
 
@@ -44,8 +41,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam String text,
-                                 @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                 @Positive @RequestParam(defaultValue = "10") int size) {
+                                 @RequestParam(defaultValue = "0") int from,
+                                 @RequestParam(defaultValue = "10") int size) {
         return itemService.search(text, from, size);
     }
 
@@ -58,7 +55,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader(HEADER) long userId,
                                  @PathVariable long itemId,
-                                 @Valid @RequestBody CommentDto commentDto) {
+                                 @RequestBody CommentDto commentDto) {
         return itemService.addComment(userId, itemId, commentDto);
     }
 

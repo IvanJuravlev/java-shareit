@@ -2,23 +2,21 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShortBookingDto {
+public class BookingDto {
     Long id;
-    @NotNull
-    Long itemId;
-    @FutureOrPresent
+    Item item;
+    User booker;
     LocalDateTime start;
-    @Future
     LocalDateTime end;
+    BookingStatus status;
 }
