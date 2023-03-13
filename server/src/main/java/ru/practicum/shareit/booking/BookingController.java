@@ -28,7 +28,7 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> findUserBooking(@RequestHeader(HEADER) Long userId,
+    public List<BookingDto> findByBooker(@RequestHeader(HEADER) Long userId,
                                             @RequestParam(defaultValue = "ALL", name = "state") String stateParam,
                                             @RequestParam(defaultValue = "0", required = false) int from,
                                             @RequestParam(defaultValue = "20", required = false) int size) {
@@ -45,7 +45,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public  BookingDto approveRequest(@RequestHeader(HEADER) Long userId, @PathVariable Long bookingId,
+    public  BookingDto approveBookingRequest(@RequestHeader(HEADER) Long userId, @PathVariable Long bookingId,
                                       @RequestParam Boolean approved) {
         return bookingService.approveBookingRequest(userId, bookingId, approved);
     }
