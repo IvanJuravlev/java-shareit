@@ -44,7 +44,6 @@ public class UserService {
                 new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
 
         if (userDto.getEmail() != null) {
-            checkIfEmailExists(userDto.getEmail());
             user.setEmail(userDto.getEmail());
         }
         if (userDto.getName() != null) {
@@ -62,12 +61,12 @@ public class UserService {
         return UserMapper.toUserDto(user);
     }
 
-    private void checkIfEmailExists(String email) {
-        if (userRepository.existsByEmail(email)) {
-            String message = String.format("Пользователь таким с email %s уже существует", email);
-            log.warn(message);
-            throw new DuplicatedEmailException(message);
-        }
-    }
+//    private void checkIfEmailExists(String email) {
+//        if (userRepository.existsByEmail(email)) {
+//            String message = String.format("Пользователь таким с email %s уже существует", email);
+//            log.warn(message);
+//            throw new DuplicatedEmailException(message);
+//        }
+//    }
 }
 

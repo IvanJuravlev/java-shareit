@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handlerDuplicateEmailException(final DuplicatedEmailException exception) {
-        log.warn("409 {}", exception.getMessage());
-        return exception.getMessage();
-    }
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    public String handlerDuplicateEmailException(final DuplicatedEmailException exception) {
+//        log.warn("409 {}", exception.getMessage());
+//        return exception.getMessage();
+//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

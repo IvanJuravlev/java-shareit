@@ -26,9 +26,9 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader(HEADER) long id, @Valid @RequestBody BookingDto bookingDto) {
-        if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
-            throw new BadRequestException("Не правильное время для бронирования");
-        }
+//        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getEnd().equals(null) || bookingDto.getStart().equals(null)) {
+//            throw new BadRequestException("Не правильное время для бронирования");
+//        }
         return bookingClient.create(id, bookingDto);
     }
 

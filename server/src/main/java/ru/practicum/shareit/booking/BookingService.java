@@ -50,7 +50,8 @@ public class BookingService {
         if (!item.getAvailable()) {
             throw new BadRequestException("Вещь не доступна для бронирования");
         }
-        if (shortBookingDto.getEnd().isBefore(shortBookingDto.getStart())) {
+        if (shortBookingDto.getEnd().isBefore(shortBookingDto.getStart()) ||
+                shortBookingDto.getStart().equals(shortBookingDto.getEnd())) {
             throw new BadRequestException("Не корректное время заказа вещи");
         }
 
