@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemBookingDto {
+public class ItemBookingDto { //Убрать класс
     long id;
     String name;
     String description;

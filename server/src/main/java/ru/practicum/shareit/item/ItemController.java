@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 
 import java.util.List;
 
@@ -28,14 +29,14 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemBookingDto> getAllByOwner(@RequestHeader(HEADER) long ownerId,
-                                              @RequestParam(defaultValue = "0") int from,
-                                              @RequestParam(defaultValue = "10") int size) {
+    public List<ItemResponseDto> getAllByOwner(@RequestHeader(HEADER) long ownerId,
+                                               @RequestParam(defaultValue = "0") int from,
+                                               @RequestParam(defaultValue = "10") int size) {
         return itemService.getAllByOwner(ownerId, from, size);
     }
 
     @GetMapping(itemPath)
-    public ItemBookingDto getItemById(@RequestHeader(HEADER) Long userId, @PathVariable Long itemId) {
+    public ItemResponseDto getItemById(@RequestHeader(HEADER) Long userId, @PathVariable Long itemId) {
         return itemService.getByItemId(userId, itemId);
     }
 

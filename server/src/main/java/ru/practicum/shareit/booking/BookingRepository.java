@@ -6,48 +6,53 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Pageable pageable);
+    List<Booking> findAllByBookerIdAndStatus(Long bookerId, BookingStatus status, Pageable pageable);//1
 
-    List<Booking> findAllByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findAllByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime date, Pageable pageable);//1
 
-    List<Booking> findAllByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findAllByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime date, Pageable pageable);//1
 
-    Optional<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end);
+   // Optional<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end);
+
+    List<Booking> findByItemIdAndBookerIdAndEndLessThanAndStatus(
+            Long id, Long id1, LocalDateTime end, BookingStatus status
+    );
 
     Optional<Booking> findFirstByBookerAndItemIdAndEndBefore(User booker, Long itemId, LocalDateTime date);
 
-    List<Booking> findByItemOwnerIdOrderByStartDesc(long ownerId, Pageable pageable);
-
-    List<Booking> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);
+    List<Booking> findByItemOwnerIdOrderByStartDesc(long ownerId, Pageable pageable);//2
+//
+    List<Booking> findAllByBookerIdOrderByStartDesc(long userId, Pageable pageable);//1
 
     @Query("select b from Booking b where  " +
             "b.start < :date and :date < b.end and " +
             "b.booker.id = :bookerId")
-    List<Booking> findByBookerIdCurrDate(Long bookerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findByBookerIdCurrDate(Long bookerId, LocalDateTime date, Pageable pageable);//1
 
     @Query("select b from Booking b where  " +
             "b.item.owner.id = :ownerId and " +
             "b.end < :date")
-    List<Booking> findAllItemBookingEndIsBefore(Long ownerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findAllItemBookingEndIsBefore(Long ownerId, LocalDateTime date, Pageable pageable);//2
 
     @Query("select b from Booking b where  " +
             "b.item.owner.id = :ownerId and " +
             "b.start > :date")
-    List<Booking> findAllItemBookingAndStartIsAfter(Long ownerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findAllItemBookingAndStartIsAfter(Long ownerId, LocalDateTime date, Pageable pageable);//2
 
     @Query("select b from Booking b where  " +
             "b.start < :date and :date < b.end and " +
             "b.item.owner.id = :ownerId")
-    List<Booking> findAllItemBookingCurrDate(Long ownerId, LocalDateTime date, Pageable pageable);
+    List<Booking> findAllItemBookingCurrDate(Long ownerId, LocalDateTime date, Pageable pageable);//2
 
     @Query("select b from Booking b where  " +
             "b.item.owner.id = :ownerId and b.status = :status")
-    List<Booking> findAllItemBookingStatus(Long ownerId, BookingStatus status, Pageable pageable);
+    List<Booking> findAllItemBookingStatus(Long ownerId, BookingStatus status, Pageable pageable);//2
 
     @Query("select distinct booking from Booking booking " +
             "where booking.end < ?2 " +
@@ -60,5 +65,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "and booking.item.id = ?1 " +
             "order by booking.start ")
     Optional<Booking> findNextBooking(long itemId, LocalDateTime now);
+
+    @Query("select b from Booking b where b.item.id in ?1 and b.item.owner.id = ?2 and b.status != 'REJECTED'" +
+            " and b.start < ?3 order by b.start desc")
+    List<Booking> findByItemIdAndOwnerIdAndStartDateLessThenNowInOrderByIdDesc(
+            Collection<Long> ids, Long ownerId, LocalDateTime time
+    );
+
+    @Query("select b from Booking b where b.item.id in ?1 and b.item.owner.id = ?2 and b.status != 'REJECTED'" +
+            " and b.start > ?3 order by b.start")
+    List<Booking> findByItemIdAndOwnerIdAndStartDateIsMoreThenNowInOrderByIdAsc(
+            Collection<Long> ids, Long ownerId, LocalDateTime time
+    );
+
+
 
 }

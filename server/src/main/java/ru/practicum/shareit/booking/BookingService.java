@@ -78,7 +78,7 @@ public class BookingService {
 
 
 
-    public List<BookingDto> findByBooker(Long userId, String state, int from, int size) {
+    public List<BookingDto> findByBooker(Long userId, String state, int from, int size) { //
         userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException(String.format("Пользователя %x не существует", userId));
         });
@@ -118,7 +118,7 @@ public class BookingService {
                 .collect(Collectors.toList());
      }
 
-    public List<BookingDto> findItemBooking(Long userId, String stateParam, int from, int size) {
+    public List<BookingDto> findItemBooking(Long userId, String stateParam, int from, int size) { //тут
         userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException(String.format("Пользователя %x не существует", userId));
         });

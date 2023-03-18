@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingItemDto {
