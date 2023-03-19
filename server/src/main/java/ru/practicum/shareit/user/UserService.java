@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.DuplicatedEmailException;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
@@ -60,13 +59,5 @@ public class UserService {
         userRepository.deleteById(id);
         return UserMapper.toUserDto(user);
     }
-
-//    private void checkIfEmailExists(String email) {
-//        if (userRepository.existsByEmail(email)) {
-//            String message = String.format("Пользователь таким с email %s уже существует", email);
-//            log.warn(message);
-//            throw new DuplicatedEmailException(message);
-//        }
-//    }
 }
 

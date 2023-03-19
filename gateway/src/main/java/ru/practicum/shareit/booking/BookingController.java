@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import ru.practicum.shareit.booking.dto.ShortBookingDto;
-import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotSupportedStateException;
 
 @RestController
@@ -26,9 +24,6 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader(HEADER) long id, @Valid @RequestBody BookingDto bookingDto) {
-//        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getEnd().equals(null) || bookingDto.getStart().equals(null)) {
-//            throw new BadRequestException("Не правильное время для бронирования");
-//        }
         return bookingClient.create(id, bookingDto);
     }
 

@@ -15,9 +15,10 @@ import ru.practicum.shareit.item.Comment.CommentDto;
 import ru.practicum.shareit.item.Comment.CommentMapper;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,9 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ItemBookingDtoTest {
 
     @Autowired
-    private JacksonTester<ItemBookingDto> json;
+    private JacksonTester<ItemResponseDto> json;
 
-    private ItemBookingDto item1DtoBooking;
+    private ItemResponseDto item1DtoBooking;
 
     @BeforeEach
     void beforeEach() {
@@ -57,7 +58,7 @@ public class ItemBookingDtoTest {
                 .owner(user1)
                 .itemRequest(itemRequest1)
                 .build();
-        item1DtoBooking = ItemMapper.toItemBookingDto(item1);
+        item1DtoBooking = ItemMapper.toResponseDto(item1, UserMapper.toUserDto(user1));
 
         Booking booking1 = Booking.builder()
                 .id(1L)
@@ -94,7 +95,7 @@ public class ItemBookingDtoTest {
 
     @Test
     void testSerialize() throws Exception {
-        JsonContent<ItemBookingDto> result = json.write(item1DtoBooking);
+        JsonContent<ItemResponseDto> result = json.write(item1DtoBooking);
 
         Integer value = Math.toIntExact(item1DtoBooking.getId());
         Integer lasBookingId = Math.toIntExact(item1DtoBooking.getLastBooking().getId());
@@ -113,7 +114,7 @@ public class ItemBookingDtoTest {
         assertThat(result).extractingJsonPathStringValue("$.description")
                 .isEqualTo(item1DtoBooking.getDescription());
         assertThat(result).extractingJsonPathBooleanValue("$.available")
-                .isEqualTo(item1DtoBooking.isAvailable());
+                .isEqualTo(item1DtoBooking.getAvailable());
         assertThat(result).extractingJsonPathNumberValue(
                 "$.lastBooking.id").isEqualTo(lasBookingId);
         assertThat(result).extractingJsonPathNumberValue(

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.client.BaseClient;
 import java.util.Map;
 

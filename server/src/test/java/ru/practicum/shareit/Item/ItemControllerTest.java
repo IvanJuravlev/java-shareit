@@ -20,8 +20,8 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
@@ -50,7 +50,7 @@ public class ItemControllerTest {
 
     private ItemDto itemDto;
 
-    private ItemBookingDto itemBookingDto;
+    private ItemResponseDto itemBookingDto;
     private CommentDto commentDto;
 
 
@@ -73,7 +73,7 @@ public class ItemControllerTest {
                 .itemRequest(null)
                 .build();
         itemDto = ItemMapper.toItemDto(item1);
-        itemBookingDto = ItemMapper.toItemBookingDto(item1);
+        itemBookingDto = ItemMapper.toResponseDto(item1, UserMapper.toUserDto(user1));
 
         Comment comment1 = Comment.builder()
                 .id(1L)

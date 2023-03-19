@@ -89,6 +89,20 @@ public class ItemRequestServiceTest {
     }
 
     @Test
+    void addRequestWithWrongUser() {
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                service.create(
+                        user.getId(),
+                        postItemRequestDto
+                ));
+
+        assertEquals("Пользователь c id 1 не найден", exception.getMessage());
+    }
+
+    @Test
     void addRequestAndCheckRepositoryMethodCalls() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
@@ -103,16 +117,6 @@ public class ItemRequestServiceTest {
                 .save(any(ItemRequest.class));
     }
 
-    @Test
-    void addRequestWithIncorrectUserId() {
-        when(userRepository.findById(FAKE_ID))
-                .thenThrow(new NotFoundException("User not found"));
-
-        final NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> service.create(FAKE_ID, postItemRequestDto));
-
-        assertEquals("User not found", exception.getMessage());
-    }
 
     @Test
     void getRequestListByOwnerId() {
@@ -143,13 +147,15 @@ public class ItemRequestServiceTest {
 
     @Test
     void getRequestListByIncorrectUserId() {
-        when(userRepository.findById(FAKE_ID))
-                .thenThrow(new NotFoundException("User not found"));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
 
-        final NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> service.getOnwRequests(FAKE_ID));
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                service.getOnwRequests(
+                        user.getId()
+                ));
 
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("Пользователь c id 1 не найден", exception.getMessage());
     }
 
     @Test
@@ -181,13 +187,15 @@ public class ItemRequestServiceTest {
 
     @Test
     void getAllRequestListByIncorrectUserId() {
-        when(userRepository.findById(FAKE_ID))
-                .thenThrow(new NotFoundException("User not found"));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
 
-        final NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> service.getOtherRequests(FAKE_ID, 0,10));
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                service.getOtherRequests(
+                        user.getId(), 0, 10
+                ));
 
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("Пользователь c id 1 не найден", exception.getMessage());
     }
 
     @Test
@@ -219,11 +227,15 @@ public class ItemRequestServiceTest {
 
     @Test
     void getRequestByIncorrectUserId() {
-        when(userRepository.findById(anyLong())).thenThrow(new NotFoundException("User not found"));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.getById(FAKE_ID, request.getId()));
-        assertEquals("User not found", exception.getMessage());
+        NotFoundException exception = assertThrows(NotFoundException.class, () ->
+                service.getById(
+                        user.getId(), request.getId()
+                ));
 
+        assertEquals("Пользователь c id 1 не найден", exception.getMessage());
     }
 
     @Test
@@ -231,12 +243,12 @@ public class ItemRequestServiceTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(user));
         when(requestRepository.findById(anyLong()))
-                .thenThrow(new NotFoundException("Request not found"));
+                .thenReturn(Optional.empty());
 
         final NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> service.getById(user.getId(), FAKE_ID));
+                () -> service.getById(user.getId(), request.getId()));
 
-        assertEquals("Request not found", exception.getMessage());
+        assertEquals("Запрос с id 1 не существует", exception.getMessage());
     }
 
 }

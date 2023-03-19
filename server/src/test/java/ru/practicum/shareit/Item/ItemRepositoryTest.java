@@ -4,11 +4,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@AutoConfigureTestDatabase
 class ItemRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
@@ -40,20 +41,18 @@ class ItemRepositoryTest {
 
     private Item item1;
 
+
     @BeforeEach
     void beforeEach() {
         LocalDateTime now = LocalDateTime.now();
 
-        user1 = new User(1L, "User1 name", "user1@mail.com");
-        userRepository.save(user1);
-        User user2 = new User(2L, "User2 name", "user2@mail.com");
-        userRepository.save(user2);
+        user1 = userRepository.save(new User(1L, "User1 name", "user1@mail.com"));
 
-        ItemRequest itemRequest1 = new ItemRequest(1L, "ItemRequest1 description", user1, now);
-        itemRequestRepository.save(itemRequest1);
+        ItemRequest itemRequest1 = itemRequestRepository
+                .save(new ItemRequest(1L, "ItemRequest1 description", user1, now));
 
-        item1 = new Item(1L, "Item1 name", "Item1 description", true, user1, itemRequest1);
-        itemRepository.save(item1);
+        item1 = itemRepository
+                .save(new Item(1L, "Item1 name", "Item1 description", true, user1, itemRequest1));
     }
 
     @AfterEach

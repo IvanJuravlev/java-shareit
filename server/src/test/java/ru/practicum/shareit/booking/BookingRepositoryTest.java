@@ -207,18 +207,6 @@ class BookingRepositoryTest {
         assertEquals(booking, bookingList.get(0));
     }
 
-    @Test
-    void findFirstByBookerAndItemIdAndEndBeforeTest() {
-        booking.setStatus(WAITING);
-        em.persist(user);
-        em.persist(user2);
-        em.persist(item);
-        em.persist(booking);
-
-        Booking res = bookingRepository.findByBookerIdAndItemIdAndEndBefore(user2.getId(), item.getId(),
-                LocalDateTime.now().plusHours(1)).orElseThrow();
-        assertEquals(booking, res);
-    }
 
     @Test
     void findBookingsLastTest() {
