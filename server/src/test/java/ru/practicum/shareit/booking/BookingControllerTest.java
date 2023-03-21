@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserDto;
@@ -87,6 +89,47 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
     }
+
+    @Test
+    void changeStatus() throws Exception {
+        when(bookingService.approveBookingRequest(anyLong(), anyLong(), anyBoolean()))
+                .thenReturn(booking1DtoResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/bookings/1")
+                        .param("approved", "true")
+                        .header(HEADER, user2Dto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
+
+
+    }
+
+    @Test
+    void create() throws Exception {
+        when(bookingService.create(anyLong(), any(ShortBookingDto.class)))
+                .thenReturn(booking1DtoResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
+                        .content(mapper.writeValueAsString(booking1Dto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER, user2Dto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(booking1DtoResponse)));
+
+    }
+
+    @Test
+    void findByBookerTest() throws Exception {
+        when(bookingService.findByBooker(anyLong(), any(String.class), anyInt(), anyInt()))
+                .thenReturn(List.of(booking1DtoResponse));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/bookings")
+                        .header(HEADER, user2Dto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(List.of(booking1DtoResponse))));
+    }
+
+
 
     @Test
     void findItemBookingTest() throws Exception {

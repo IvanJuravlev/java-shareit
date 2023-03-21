@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -79,7 +80,8 @@ class BookingServiceTest {
         userDto1 = UserMapper.toUserDto(user1);
         userDto2 = UserMapper.toUserDto(user2);
 
-        userService.create(userDto);
+        userService.create(userDto1);
+        userService.create(userDto2);
 
         item1 = Item.builder()
                 .id(1L)
@@ -166,6 +168,32 @@ class BookingServiceTest {
 
         assertEquals("Вещь не может быть заказана владельцем", exception.getMessage());
 
+    }
+
+    @Test
+    void changeStatusWithIncorrectUser() {
+        when(userRepository.findById(55L))
+                .thenThrow(new NotFoundException("Бронирование не найдено"));
+
+        final NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.approveBookingRequest(55L, booking1.getId(), true));
+
+        Assertions.assertEquals("Бронирование не найдено", exception.getMessage());
+    }
+
+    @Test
+    void addBookingWithItemAvailableFalse() {
+        item1.setAvailable(false);
+
+        when(userRepository.findById(user2.getId()))
+                .thenReturn(Optional.of(user2));
+        when(itemRepository.findById(item1.getId()))
+                .thenReturn(Optional.of(item1));
+
+        final BadRequestException exception = assertThrows(BadRequestException.class,
+                () -> bookingService.create(user2.getId(), BookingMapper.toShortBookingDto(booking1)));
+
+        Assertions.assertEquals("Вещь не доступна для бронирования", exception.getMessage());
     }
 
     @Test
