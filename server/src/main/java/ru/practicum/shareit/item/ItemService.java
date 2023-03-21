@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRequestRepository itemRequestRepository;
@@ -41,8 +39,6 @@ public class ItemService {
     private final UserRepository userRepository;
 
 
-
-    @Transactional
     public ItemDto create(long userId, ItemDto itemDto) {
         User owner = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException(String.format("Пользователя id %x не существует", userId));
@@ -78,7 +74,6 @@ public class ItemService {
     }
 
 
-    @Transactional
     public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException(String.format("Предмет id %x не найден", itemId)));
@@ -134,7 +129,6 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));

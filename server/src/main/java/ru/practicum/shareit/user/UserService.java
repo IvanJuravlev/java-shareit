@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
 
@@ -34,10 +32,8 @@ public class UserService {
         User user = userRepository.save(UserMapper.toUser(userDto));
         log.info("Пользователь с id {} создан", user.getId());
         return UserMapper.toUserDto(user);
-
     }
 
-    @Transactional
     public UserDto update(long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
@@ -52,7 +48,6 @@ public class UserService {
         return UserMapper.toUserDto(userRepository.save(user));
     }
 
-    @Transactional
     public UserDto delete(long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователя с id %x несуществует", id)));
