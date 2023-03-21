@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.exception.BadRequestException;
@@ -25,6 +26,7 @@ import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BookingService {
     private final BookingRepository bookingRepository;
@@ -34,6 +36,7 @@ public class BookingService {
     private final ItemRepository itemRepository;
     private final BookingMapper bookingMapper;
 
+    @Transactional
     public BookingDto create(long bookerId, ShortBookingDto shortBookingDto) {
         User user = userRepository.findById(bookerId).orElseThrow(() -> {
             throw new NotFoundException(String.format("Пользователя %x не существует", bookerId));
@@ -153,7 +156,7 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional
     public BookingDto approveBookingRequest(Long userId, Long bookingId, Boolean approved) {
             Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                     new NotFoundException("Бронирование не найдено"));
