@@ -45,7 +45,8 @@ public class BookingController {
                                               @RequestParam(defaultValue = "ALL", required = false) String state,
                                               @PositiveOrZero @RequestParam(defaultValue = "0", required = false) int from,
                                               @Positive @RequestParam(defaultValue = "20", required = false) int size) {
-        BookingState status = BookingState.from(state).orElseThrow(() -> new NotSupportedStateException("Unknown state: " + state));
+        BookingState status = BookingState.from(state).orElseThrow(()
+                -> new NotSupportedStateException(String.format("Unknown state: %s", state)));
         return bookingClient.findByBooker(userId, String.valueOf(status), from, size);
     }
 
